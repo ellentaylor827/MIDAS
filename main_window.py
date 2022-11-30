@@ -9,8 +9,10 @@ from PyQt6.QtWidgets import (
     QMenu,
     QToolBar, QStatusBar,
 )
+
 # Setting a base directory for when generating a pyinstaller file
 basedir = os.path.dirname(__file__)
+
 
 # Creating a class that holds all the mainWindow data
 class MainWindow(QMainWindow):
