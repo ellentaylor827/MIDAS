@@ -9,9 +9,10 @@ from PyQt6.QtWidgets import (
     QMenu,
     QToolBar, QStatusBar,
 )
+# Setting a base directory for when generating a pyinstaller file
 basedir = os.path.dirname(__file__)
 
-
+# Creating a class that holds all the mainWindow data
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -19,17 +20,21 @@ class MainWindow(QMainWindow):
         self.slider_widget = QSlider()
         self.edit_icon = QAction(QIcon(os.path.join(basedir, "iconFiles", "editIcon.png")), "edit_button", self)
         self.hand_icon = QAction(QIcon(os.path.join(basedir, "iconFiles", "handIcon.png")), "pan_button", self)
+
         # creating toolbar items
         self.left_toolbar = QToolBar()
         self.right_toolbar = QToolBar()
+
         # setting window title and min size (used to prevent UI being hidden from user)
         self.setWindowTitle("Widgets App")
         width = 1280
         height = 720
         self.setMinimumSize(width, height)
+
         # This is calling the left_tool_bar function which is then populating the left toolbar with the buttons
         self.left_tool_bar()
         self.right_tool_bar()
+
         # Below used to either enable or disable the status bar that we have set things such as Pan Button or Edit
         # button to
         self.setStatusBar(QStatusBar(self))
@@ -53,14 +58,17 @@ class MainWindow(QMainWindow):
         self.hand_icon.triggered.connect(self.hand_button_click)
         self.hand_icon.setCheckable(True)
         self.left_toolbar.addAction(self.hand_icon)
+
         # Creating the second button
         self.edit_icon.setStatusTip("Edit Button")
         self.edit_icon.triggered.connect(self.edit_button_click)
         self.edit_icon.setCheckable(True)
         self.left_toolbar.addAction(self.edit_icon)
+
         # Ensuring that only 1 button (edit or pan) is selected at one time
         self.hand_icon.toggled.connect(self.edit_icon.setDisabled)
         self.edit_icon.toggled.connect(self.hand_icon.setDisabled)
+
         # TODO - change so that both buttons are clickable - currently only one is then it has to be disabled to
         #  click the other
 
