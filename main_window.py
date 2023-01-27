@@ -89,11 +89,9 @@ class MainWindow(QMainWindow):
         return self.slider_widget
 
     def top_main_menu(self):
-
         menu = self.menuBar()
 
-
-        button_action = QAction(QIcon("folder.png"), "&Your button", self)
+        button_action = QAction("Save", self)
         button_action.setStatusTip("This is your button")
         button_action.triggered.connect(self.onMyToolBarButtonClick)
         button_action.setCheckable(True)
