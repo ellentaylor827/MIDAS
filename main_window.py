@@ -7,7 +7,7 @@ from PyQt6.QtWidgets import (
     QMainWindow,
     QSlider,
     QMenu,
-    QToolBar, QStatusBar
+    QToolBar, QStatusBar,QFileDialog
 )
 
 # Setting a base directory for when generating a pyinstaller file
@@ -15,11 +15,9 @@ basedir = os.path.dirname(__file__)
 
 
 # Creating a class that holds all the mainWindow data
-def importButtonClick(s):
-    print("import button is: ", s)
-
 
 class MainWindow(QMainWindow):
+    savefile_direct = ""
     def __init__(self):
         super().__init__()
         # Setting buttons / icons for the toolbar
@@ -98,17 +96,55 @@ class MainWindow(QMainWindow):
         # import button
         import_action = QAction("Import", self)
         import_action.setStatusTip("This is to import a file")
-        import_action.triggered.connect(importButtonClick)
+        import_action.triggered.connect(self.importButtonClick)
 
         # File menu
         file_menu = menu.addMenu("&File")
         file_menu.addAction(button_action)
         file_menu.addAction(import_action)
 
+    # Function to get a file name source: https://learndataanalysis.org/source-code-how-to-use-qfiledialog-to-select-files-in-pyqt6/
+    def getFileName(self):
+        file_filter = 'NIFTI Images (*.nii *.nii.gz *.hdr)'
+        response = QFileDialog.getOpenFileName(
+            parent=self,
+            caption='Select a file',
+            directory=os.getcwd(),
+            filter=file_filter,
+            initialFilter='NIFTI Images (*.nii *.nii.gz *.hdr)'
+        )
+        return response
+    # source: https://learndataanalysis.org/source-code-how-to-use-qfiledialog-to-select-files-in-pyqt6/
+    def getFileNames(self):
+        file_filter = 'NIFTI Images (*.nii *.nii.gz *.hdr)'
+        response = QFileDialog.getOpenFileNames(
+            parent=self,
+            caption='Select file(s)',
+            directory=os.getcwd(),
+            filter=file_filter,
+            initialFilter='NIFTI Images (*.nii *.nii.gz *.hdr)'
+        )
+        return response
 
-    @staticmethod
-    def saveButtonClick():
+    # source: https://learndataanalysis.org/source-code-how-to-use-qfiledialog-to-select-files-in-pyqt6/
+    def getSaveFileName(self):
+        file_filter = 'NIFTI Images (*.nii *.nii.gz *.hdr) ;; All Files (*)'
+        response = QFileDialog.getSaveFileName(
+            parent=self,
+            caption='Select a data file',
+            directory='Data File.dat',
+            filter=file_filter,
+            initialFilter='NIFTI Images (*.nii *.nii.gz *.hdr)'
+        )
+        return response
+
+    def saveButtonClick(self):
+        savefile_direct = self.getSaveFileName()
         print("save button pressed!")
+
+    def importButtonClick(self):
+        importfile_direct = self.getFileName()
+        print("import button pressed!")
 
     @staticmethod
     def edit_button_click():
