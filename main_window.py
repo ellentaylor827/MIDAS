@@ -17,6 +17,7 @@ basedir = os.path.dirname(__file__)
 # Creating a class that holds all the mainWindow data
 class MainWindow(QMainWindow):
     savefile_direct = ""
+    importfile_direct = ""
     def __init__(self):
         super().__init__()
         # Setting buttons / icons for the toolbar
