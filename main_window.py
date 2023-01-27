@@ -15,6 +15,10 @@ basedir = os.path.dirname(__file__)
 
 
 # Creating a class that holds all the mainWindow data
+def importButtonClick(s):
+    print("import button is: ", s)
+
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -58,21 +62,16 @@ class MainWindow(QMainWindow):
         # file paths such as icons as it will not be portable when creating .exe files
         self.hand_icon.setStatusTip("Pan Button")
         self.hand_icon.triggered.connect(self.hand_button_click)
-        self.hand_icon.setCheckable(True)
         self.left_toolbar.addAction(self.hand_icon)
 
         # Creating the second button
         self.edit_icon.setStatusTip("Edit Button")
         self.edit_icon.triggered.connect(self.edit_button_click)
-        self.edit_icon.setCheckable(True)
         self.left_toolbar.addAction(self.edit_icon)
 
         # Ensuring that only 1 button (edit or pan) is selected at one time
         self.hand_icon.toggled.connect(self.edit_icon.setDisabled)
         self.edit_icon.toggled.connect(self.hand_icon.setDisabled)
-
-        # TODO - change so that both buttons are clickable - currently only one is then it has to be disabled to
-        #  click the other
 
     def slider(self):
         # Creating a slider widget, it is then set to have a range of 1 to 200. This is now set to the central widget
@@ -91,24 +90,35 @@ class MainWindow(QMainWindow):
     def top_main_menu(self):
         menu = self.menuBar()
 
+        # Save button
         button_action = QAction("Save", self)
-        button_action.setStatusTip("This is your button")
-        button_action.triggered.connect(self.onMyToolBarButtonClick)
-        button_action.setCheckable(True)
+        button_action.setStatusTip("This is to save the file")
+        button_action.triggered.connect(self.saveButtonClick)
 
+        # import button
+        import_action = QAction("Import", self)
+        import_action.setStatusTip("This is to import a file")
+        import_action.triggered.connect(importButtonClick)
+
+        # File menu
         file_menu = menu.addMenu("&File")
         file_menu.addAction(button_action)
+        file_menu.addAction(import_action)
 
-    def onMyToolBarButtonClick(self, s):
-        print("menu is: ", s)
-
-    @staticmethod
-    def edit_button_click(s):
-        print("The edit icon is: ", s)
 
     @staticmethod
-    def hand_button_click(s):
-        print("the hand button is: ", s)
+    def saveButtonClick():
+        print("save button pressed!")
+
+    @staticmethod
+    def edit_button_click():
+        # make sure that this will first disable the pan/hand button
+        print("Edit button pressed!")
+
+    @staticmethod
+    def hand_button_click():
+        # make sure that this will first disable the edit button
+        print("hand button clicked!")
 
     # Setting the right click menu items
     def contextMenuEvent(self, e):
