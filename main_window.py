@@ -7,7 +7,7 @@ from PyQt6.QtWidgets import (
     QMainWindow,
     QSlider,
     QMenu,
-    QToolBar, QStatusBar,
+    QToolBar, QStatusBar
 )
 
 # Setting a base directory for when generating a pyinstaller file
@@ -36,7 +36,7 @@ class MainWindow(QMainWindow):
         # This is calling the left_tool_bar function which is then populating the left toolbar with the buttons
         self.left_tool_bar()
         self.right_tool_bar()
-
+        self.top_main_menu()
         # Below used to either enable or disable the status bar that we have set things such as Pan Button or Edit
         # button to
         self.setStatusBar(QStatusBar(self))
@@ -87,6 +87,22 @@ class MainWindow(QMainWindow):
         # This thing here occurs on click - kept here if we need it in the future
         # slider_widget.sliderMoved.connect(self.slider_position)
         return self.slider_widget
+
+    def top_main_menu(self):
+
+        menu = self.menuBar()
+
+
+        button_action = QAction(QIcon("folder.png"), "&Your button", self)
+        button_action.setStatusTip("This is your button")
+        button_action.triggered.connect(self.onMyToolBarButtonClick)
+        button_action.setCheckable(True)
+
+        file_menu = menu.addMenu("&File")
+        file_menu.addAction(button_action)
+
+    def onMyToolBarButtonClick(self, s):
+        print("menu is: ", s)
 
     @staticmethod
     def edit_button_click(s):
