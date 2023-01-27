@@ -15,7 +15,6 @@ basedir = os.path.dirname(__file__)
 
 
 # Creating a class that holds all the mainWindow data
-
 class MainWindow(QMainWindow):
     savefile_direct = ""
     def __init__(self):
@@ -132,7 +131,8 @@ class MainWindow(QMainWindow):
         response = QFileDialog.getSaveFileName(
             parent=self,
             caption='Select a data file',
-            directory='Data File.dat',
+            # TODO - make sure that this is the data type that we want to return (nii, nii.gz or what?)
+            directory='Data File.nii',
             filter=file_filter,
             initialFilter='NIFTI Images (*.nii *.nii.gz *.hdr)'
         )
