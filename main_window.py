@@ -179,12 +179,10 @@ class MainWindow(QMainWindow):
     # Setting the right click menu items
     def contextMenuEvent(self, e):
         context = QMenu(self)
-        undo_action = QAction("undo", self)
-        undo_action.triggered.connect(self.undo)
-        context.addAction(undo_action)
-        redo_action = QAction("redo", self)
-        redo_action.triggered.connect(self.redo)
-        context.addAction(redo_action)
+
+        context.addAction(self.undo_icon)
+        context.addAction(self.redo_icon)
+
         context.exec(e.globalPos())
 
     # TODO - these are the functions that we need to implement for the mouse events such as
