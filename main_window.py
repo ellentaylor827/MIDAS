@@ -25,6 +25,8 @@ class MainWindow(QMainWindow):
         # Calling the constructor of the parent class.
         super().__init__()
 
+        # self.setMouseTracking(True)
+
         # Setting buttons / icons for the toolbar
         self.slider_widget = QSlider()
         self.edit_icon = QAction(QIcon(os.path.join(basedir, "iconFiles", "editIcon.png")), "edit_button", self)
@@ -109,11 +111,13 @@ class MainWindow(QMainWindow):
 
         # File menu
         file_menu = menu.addMenu("&File")
+        edit_menu = menu.addMenu("&Edit")
         file_menu.addAction(button_action)
         file_menu.addAction(import_action)
+        edit_menu.addAction(self.edit_icon)
+        edit_menu.addAction(self.hand_icon)
 
-    # Function to get a file name source: https://learndataanalysis.org/source-code-how-to-use-qfiledialog-to-select
-    # -files-in-pyqt6/
+    # Function - self - to get a file name
     def getFileName(self):
         file_filter = 'NIFTI Images (*.nii *.nii.gz *.hdr)'
         response = QFileDialog.getOpenFileName(
@@ -125,7 +129,7 @@ class MainWindow(QMainWindow):
         )
         return response
 
-    # source: https://learndataanalysis.org/source-code-how-to-use-qfiledialog-to-select-files-in-pyqt6/
+    # Function - self - to get multiple file names
     def getFileNames(self):
         file_filter = 'NIFTI Images (*.nii *.nii.gz *.hdr)'
         response = QFileDialog.getOpenFileNames(
@@ -137,7 +141,7 @@ class MainWindow(QMainWindow):
         )
         return response
 
-    # source: https://learndataanalysis.org/source-code-how-to-use-qfiledialog-to-select-files-in-pyqt6/
+    # Function - self - to get a name and place to save a file
     def getSaveFileName(self):
         file_filter = 'NIFTI Images (*.nii *.nii.gz *.hdr) ;; All Files (*)'
         response = QFileDialog.getSaveFileName(
@@ -171,16 +175,46 @@ class MainWindow(QMainWindow):
     # Setting the right click menu items
     def contextMenuEvent(self, e):
         context = QMenu(self)
-        context.addAction(QAction("undo", self))
-        context.addAction(QAction("redo", self))
+        undo_action = QAction("undo", self)
+        undo_action.triggered.connect(self.undo)
+        context.addAction(undo_action)
+        redo_action = QAction("redo", self)
+        redo_action.triggered.connect(self.redo)
+        context.addAction(redo_action)
         context.exec(e.globalPos())
+
+    # TODO - these are the functions that we need to implement for the mouse events such as
+    #  double click to add a point for the line
+    #  left mouse and move to pan
+
+    # this can be paired with the left click to get the location to pan the item to!
+    def mouseMoveEvent(self, e):
+        print("mouse moved", e.pos())
+
+    def mousePressEvent(self, e):
+        print("mouse pressed")
+
+    # will be used to free the mouse from the pan or select tools
+    def mouseReleaseEvent(self, e):
+        print("Mose released")
+
+    def mouseDoubleClickEvent(self, e):
+        print("mouse double clicked")
 
     @staticmethod
     def slider_value_change(i):
         print(i)
+
+    def undo(self):
+        print("undo")
+
+    def redo(self):
+        print("redo")
 
     # KEEP THIS HERE COS IDK IF WE NEED IT
     # @staticmethod
     # def slider_position(p):
     #     print("position", p)
 
+    # File handling was heavily inspired by the following source:
+    # https://learndataanalysis.org/source-code-how-to-use-qfiledialog-to-select-files-in-pyqt6/
