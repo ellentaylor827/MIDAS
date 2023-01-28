@@ -178,8 +178,9 @@ class MainWindow(QMainWindow):
     @staticmethod
     def slider_value_change(i):
         print(i)
-        
+
     # KEEP THIS HERE COS IDK IF WE NEED IT
     # @staticmethod
     # def slider_position(p):
     #     print("position", p)
+
