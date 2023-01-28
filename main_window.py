@@ -13,7 +13,6 @@ from PyQt6.QtWidgets import (
 # Setting a base directory for when generating a pyinstaller file
 basedir = os.path.dirname(__file__)
 
-# TODO - move the edit and pan icon triggers to one place to cut down on redundan code?
 
 # Creating a class that holds everything regarding the MainWindow and toolbars / menu items
 class MainWindow(QMainWindow):
@@ -25,8 +24,6 @@ class MainWindow(QMainWindow):
     def __init__(self):
         # Calling the constructor of the parent class.
         super().__init__()
-
-        # self.setMouseTracking(True)
 
         # Setting buttons, icons and triggers on press for all buttons used.
         self.slider_widget = QSlider()
@@ -95,8 +92,7 @@ class MainWindow(QMainWindow):
         # Creating a slider widget, it is then set to have a range of 1 to 200. This is now set to the central widget
         # for testing but will be moved into a toolbar on the right in the future
         self.slider_widget.setRange(1, 200)
-        # TODO - 200 is the num of volumes we have this can be fetched as seen below:
-        #  https://stackoverflow.com/questions/46712432/how-to-get-number-of-images-in-nifti-object-nibabel
+        # TODO - set 200 to the size of the nii file after importing an image
         self.slider_widget.setSingleStep(1)
         # this thing here occurs on click and scroll - use this one for everything.
         self.slider_widget.valueChanged.connect(self.slider_value_change)
@@ -106,7 +102,6 @@ class MainWindow(QMainWindow):
         return self.slider_widget
 
     def top_main_menu(self):
-
         menu = self.menuBar()
 
         file_menu = menu.addMenu("&File")
@@ -184,10 +179,6 @@ class MainWindow(QMainWindow):
         context.addAction(self.redo_icon)
 
         context.exec(e.globalPos())
-
-    # TODO - these are the functions that we need to implement for the mouse events such as
-    #  double click to add a point for the line
-    #  left mouse and move to pan
 
     # this can be paired with the left click to get the location to pan the item to!
     def mouseMoveEvent(self, e):
