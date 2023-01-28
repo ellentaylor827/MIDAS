@@ -13,24 +13,37 @@ from PyQt6.QtWidgets import (
 # Setting a base directory for when generating a pyinstaller file
 basedir = os.path.dirname(__file__)
 
+# TODO - move the edit and pan icon triggers to one place to cut down on redundan code?
 
-# Creating a class that holds everything regarding the mainwindow and tool bars / menu items
+# Creating a class that holds everything regarding the MainWindow and toolbars / menu items
 class MainWindow(QMainWindow):
     # used later on to hold returned info from file operations
     savefile_direct = ""
     importfile_direct = ""
 
-    # Constructor to create the mainwindow and call required items
+    # Constructor to create the MainWindow and call required items
     def __init__(self):
         # Calling the constructor of the parent class.
         super().__init__()
 
         # self.setMouseTracking(True)
 
-        # Setting buttons / icons for the toolbar
+        # Setting buttons, icons and triggers on press for all buttons used.
         self.slider_widget = QSlider()
-        self.edit_icon = QAction(QIcon(os.path.join(basedir, "iconFiles", "editIcon.png")), "edit_button", self)
-        self.hand_icon = QAction(QIcon(os.path.join(basedir, "iconFiles", "handIcon.png")), "pan_button", self)
+        self.edit_icon = QAction(QIcon(os.path.join(basedir, "iconFiles", "editIcon.png")), "Draw", self)
+        self.edit_icon.triggered.connect(self.edit_button_click)
+        self.edit_icon.setStatusTip("Edit Button")
+        self.hand_icon = QAction(QIcon(os.path.join(basedir, "iconFiles", "handIcon.png")), "Pan", self)
+        self.hand_icon.triggered.connect(self.hand_button_click)
+        self.hand_icon.setStatusTip("Pan Button")
+        self.undo_icon = QAction(QIcon(os.path.join(basedir, "iconFiles", "undo.png")), "Undo", self)
+        self.undo_icon.triggered.connect(self.undo)
+        self.redo_icon = QAction(QIcon(os.path.join(basedir, "iconFiles", "redo.png")), "Redo", self)
+        self.redo_icon.triggered.connect(self.redo)
+        self.save_icon = QAction(QIcon(os.path.join(basedir, "iconFiles", "save.png")), "Save", self)
+        self.save_icon.triggered.connect(self.saveButtonClick)
+        self.import_icon = QAction(QIcon(os.path.join(basedir, "iconFiles", "folder.png")), "Import", self)
+        self.import_icon.triggered.connect(self.importButtonClick)
 
         # creating toolbar items
         self.left_toolbar = QToolBar()
@@ -69,13 +82,9 @@ class MainWindow(QMainWindow):
 
         # Creating 2 buttons, Hand and edit with their respective icons. We need to use filepath for any respective
         # file paths such as icons as it will not be portable when creating .exe files
-        self.hand_icon.setStatusTip("Pan Button")
-        self.hand_icon.triggered.connect(self.hand_button_click)
         self.left_toolbar.addAction(self.hand_icon)
 
         # Creating the second button
-        self.edit_icon.setStatusTip("Edit Button")
-        self.edit_icon.triggered.connect(self.edit_button_click)
         self.left_toolbar.addAction(self.edit_icon)
 
         # Ensuring that only 1 button (edit or pan) is selected at one time
@@ -97,23 +106,15 @@ class MainWindow(QMainWindow):
         return self.slider_widget
 
     def top_main_menu(self):
+
         menu = self.menuBar()
 
-        # Save button
-        button_action = QAction("Save", self)
-        button_action.setStatusTip("This is to save the file")
-        button_action.triggered.connect(self.saveButtonClick)
-
-        # import button
-        import_action = QAction("Import", self)
-        import_action.setStatusTip("This is to import a file")
-        import_action.triggered.connect(self.importButtonClick)
-
-        # File menu
         file_menu = menu.addMenu("&File")
         edit_menu = menu.addMenu("&Edit")
-        file_menu.addAction(button_action)
-        file_menu.addAction(import_action)
+        file_menu.addAction(self.save_icon)
+        file_menu.addAction(self.import_icon)
+        edit_menu.addAction(self.undo_icon)
+        edit_menu.addAction(self.redo_icon)
         edit_menu.addAction(self.edit_icon)
         edit_menu.addAction(self.hand_icon)
 
@@ -157,6 +158,9 @@ class MainWindow(QMainWindow):
     def saveButtonClick(self):
         savefile_direct = self.getSaveFileName()
         print("save button pressed!")
+        # returns: ('/Users/alexanderelwell/Documents/GtiHub/MIDAS/Data File.nii',
+        # 'NIFTI Images (*.nii *.nii.gz *.hdr)')
+        print(savefile_direct)
 
     def importButtonClick(self):
         importfile_direct = self.getFileName()
@@ -205,16 +209,14 @@ class MainWindow(QMainWindow):
     def slider_value_change(i):
         print(i)
 
-    def undo(self):
+    @staticmethod
+    def undo():
         print("undo")
 
-    def redo(self):
+    @staticmethod
+    def redo():
         print("redo")
-
-    # KEEP THIS HERE COS IDK IF WE NEED IT
-    # @staticmethod
-    # def slider_position(p):
-    #     print("position", p)
 
     # File handling was heavily inspired by the following source:
     # https://learndataanalysis.org/source-code-how-to-use-qfiledialog-to-select-files-in-pyqt6/
+    # icon attribution: <a href="https://www.flaticon.com/free-icons/right-arrow" title="right arrow icons">Right arrow icons created by nahumam - Flaticon</a>
