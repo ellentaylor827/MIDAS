@@ -7,19 +7,24 @@ from PyQt6.QtWidgets import (
     QMainWindow,
     QSlider,
     QMenu,
-    QToolBar, QStatusBar,QFileDialog
+    QToolBar, QStatusBar, QFileDialog
 )
 
 # Setting a base directory for when generating a pyinstaller file
 basedir = os.path.dirname(__file__)
 
 
-# Creating a class that holds all the mainWindow data
+# Creating a class that holds everything regarding the mainwindow and tool bars / menu items
 class MainWindow(QMainWindow):
+    # used later on to hold returned info from file operations
     savefile_direct = ""
     importfile_direct = ""
+
+    # Constructor to create the mainwindow and call required items
     def __init__(self):
+        # Calling the constructor of the parent class.
         super().__init__()
+
         # Setting buttons / icons for the toolbar
         self.slider_widget = QSlider()
         self.edit_icon = QAction(QIcon(os.path.join(basedir, "iconFiles", "editIcon.png")), "edit_button", self)
@@ -39,16 +44,20 @@ class MainWindow(QMainWindow):
         self.left_tool_bar()
         self.right_tool_bar()
         self.top_main_menu()
+
         # Below used to either enable or disable the status bar that we have set things such as Pan Button or Edit
         # button to
         self.setStatusBar(QStatusBar(self))
 
+    # Function - self - create a right tool bar and call the slider function to add a function to this
     def right_tool_bar(self):
         self.right_toolbar.setIconSize(QSize(24, 24))
         self.addToolBar(PyQt6.QtCore.Qt.ToolBarArea.RightToolBarArea, self.right_toolbar)
         # add the slider to the toolbar
         self.right_toolbar.addWidget(self.slider())
 
+    # Function - self - create the right tool bar and add pan and edit buttons
+    #  These will call the edit_button_click and hand_button_click functions that can be added upon later
     def left_tool_bar(self):
         # This is creating a left toolbar that is then added to the main window. The icon size is then set to 24x24.
         # Considering increasing the icon size as it's a bit small (for macOS user's a white and black icon set might
@@ -79,7 +88,7 @@ class MainWindow(QMainWindow):
         #  https://stackoverflow.com/questions/46712432/how-to-get-number-of-images-in-nifti-object-nibabel
         self.slider_widget.setSingleStep(1)
         # this thing here occurs on click and scroll - use this one for everything.
-        self.slider_widget.valueChanged.connect(self.value_changed)
+        self.slider_widget.valueChanged.connect(self.slider_value_change)
 
         # This thing here occurs on click - kept here if we need it in the future
         # slider_widget.sliderMoved.connect(self.slider_position)
@@ -103,7 +112,8 @@ class MainWindow(QMainWindow):
         file_menu.addAction(button_action)
         file_menu.addAction(import_action)
 
-    # Function to get a file name source: https://learndataanalysis.org/source-code-how-to-use-qfiledialog-to-select-files-in-pyqt6/
+    # Function to get a file name source: https://learndataanalysis.org/source-code-how-to-use-qfiledialog-to-select
+    # -files-in-pyqt6/
     def getFileName(self):
         file_filter = 'NIFTI Images (*.nii *.nii.gz *.hdr)'
         response = QFileDialog.getOpenFileName(
@@ -114,6 +124,7 @@ class MainWindow(QMainWindow):
             initialFilter='NIFTI Images (*.nii *.nii.gz *.hdr)'
         )
         return response
+
     # source: https://learndataanalysis.org/source-code-how-to-use-qfiledialog-to-select-files-in-pyqt6/
     def getFileNames(self):
         file_filter = 'NIFTI Images (*.nii *.nii.gz *.hdr)'
@@ -165,9 +176,10 @@ class MainWindow(QMainWindow):
         context.exec(e.globalPos())
 
     @staticmethod
-    def value_changed(i):
+    def slider_value_change(i):
         print(i)
-
-    @staticmethod
-    def slider_position(p):
-        print("position", p)
+        
+    # KEEP THIS HERE COS IDK IF WE NEED IT
+    # @staticmethod
+    # def slider_position(p):
+    #     print("position", p)
