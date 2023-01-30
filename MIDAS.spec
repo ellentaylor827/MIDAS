@@ -8,7 +8,7 @@ a = Analysis(
     ['main.py'],
     pathex=[],
     binaries=[],
-    datas=[('iconFiles/editIcon.png', 'iconFiles'), ('iconFiles/handIcon.png', 'iconFiles')],
+    datas=[('iconFiles/editIcon.png', 'iconFiles'), ('iconFiles/handIcon.png', 'iconFiles'), ('iconFiles/folder.png', 'iconFiles'), ('iconFiles/save.png', 'iconFiles'), ('iconFiles/undo.png', 'iconFiles'), ('iconFiles/redo.png', 'iconFiles')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
