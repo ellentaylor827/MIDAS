@@ -61,14 +61,14 @@ class MainWindow(QMainWindow):
         # button to
         self.setStatusBar(QStatusBar(self))
 
-    # Function - self - create a right tool bar and call the slider function to add a function to this
+    # Function - self - create a right toolbar and call the slider function to add a function to this
     def right_tool_bar(self):
         self.right_toolbar.setIconSize(QSize(24, 24))
         self.addToolBar(PyQt6.QtCore.Qt.ToolBarArea.RightToolBarArea, self.right_toolbar)
         # add the slider to the toolbar
         self.right_toolbar.addWidget(self.slider())
 
-    # Function - self - create the right tool bar and add pan and edit buttons
+    # Function - self - create the right toolbar and add pan and edit buttons
     #  These will call the edit_button_click and hand_button_click functions that can be added upon later
     def left_tool_bar(self):
         # This is creating a left toolbar that is then added to the main window. The icon size is then set to 24x24.
@@ -159,7 +159,7 @@ class MainWindow(QMainWindow):
 
     def importButtonClick(self):
         importfile_direct = self.getFileName()
-        print("import button pressed!")
+        print("import button pressed!", importfile_direct)
 
     @staticmethod
     def edit_button_click():
@@ -207,5 +207,6 @@ class MainWindow(QMainWindow):
         print("redo")
 
     # File handling was heavily inspired by the following source:
-    # https://learndataanalysis.org/source-code-how-to-use-qfiledialog-to-select-files-in-pyqt6/
-    # icon attribution: <a href="https://www.flaticon.com/free-icons/right-arrow" title="right arrow icons">Right arrow icons created by nahumam - Flaticon</a>
+    # https://learndataanalysis.org/source-code-how-to-use-qfiledialog-to-select-files-in-pyqt6/ icon attribution: <a
+    # href="https://www.flaticon.com/free-icons/right-arrow" title="right arrow icons">Right arrow icons created by
+    # nahumam - Flaticon</a>
