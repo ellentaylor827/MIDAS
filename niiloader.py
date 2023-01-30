@@ -10,13 +10,12 @@ def loadFile(filename):
 
 
 # placeholder function that plots and displays the file using pyplot
-def showSlice(image, sliceNum):
+def showSlice(image, sliceNum, colormap):
     slice = image[:, :, sliceNum]  # selects the slice to be shown
     plt.imshow(slice, cmap=colormap)  # plots the slice onto a figure in grayscale
     plt.show()  # shows the figure
-#
-#
-# colormap = 'gray'
+
+
 # filename = "BraTS20_Training_001_t1.nii.gz"
 # nifty = loadFile(filename)
 # print("There are", nifty.shape[2], "slices to see.")
