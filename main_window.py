@@ -161,7 +161,12 @@ class MainWindow(QMainWindow):
         importfile_direct = self.getFileName()
         print("import button pressed!", importfile_direct)
         image_data = loadFile(importfile_direct[0])
+        colormap = 'gray'
+        showSlice(image_data, 45, colormap)
 
+    def color_map_setting(self):
+        # TODO - hold all of the color map as a dropdown maybe? Or just hold the data
+        end
 
     @staticmethod
     def edit_button_click():
