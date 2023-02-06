@@ -1,13 +1,13 @@
 import os
 
 import PyQt6
-from PyQt6.QtCore import QSize
+from PyQt6.QtCore import QSize, Qt, QRect
 from PyQt6.QtGui import QAction, QIcon
 from PyQt6.QtWidgets import (
     QMainWindow,
     QSlider,
     QMenu,
-    QToolBar, QStatusBar, QFileDialog, QWidget
+    QToolBar, QStatusBar, QFileDialog, QWidget, QHBoxLayout, QTextEdit, QVBoxLayout, QLineEdit, QLabel
 )
 from niiloader import *
 from ImageDisplay import *
@@ -66,6 +66,8 @@ class MainWindow(QMainWindow):
 
         # Call createImageDisplay to create Widget with QVboxLayout which has the navigationToolBar and ImageDisplay widgets.
         self.createImageDisplay()
+
+        self.comment_box()
 
     # Function - self - create a right toolbar and call the slider function to add a function to this
     def right_tool_bar(self):
@@ -208,6 +210,24 @@ class MainWindow(QMainWindow):
     # this can be paired with the left click to get the location to pan the item to!
     def mouseMoveEvent(self, e):
         print("mouse moved", e.pos())
+
+    def comment_box(self):
+        # Bijoy Bakae - textbox
+
+        layout = QVBoxLayout()
+        # self.setLayout(layout)
+
+        self.textbox = QTextEdit(self)
+        self.textbox.setPlaceholderText("Enter some text")
+        self.textbox.move(1050, 7)
+
+        self.textbox.setUndoRedoEnabled(True)
+        layout.addWidget(self.textbox)
+
+    def resizeEvent(self, event):
+        self.textbox.resize(int(event.size().width() / 5), int(event.size().height() / 5))
+        x = event.size().width() - self.textbox.geometry().width() - 25
+        self.textbox.move(x, 7)
 
     def mousePressEvent(self, e):
         print("mouse pressed")
