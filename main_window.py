@@ -64,6 +64,10 @@ class MainWindow(QMainWindow):
         # button to
         self.setStatusBar(QStatusBar(self))
 
+
+        # Creating a layout for the main window
+        self.comment_box()
+
     # Function - self - create a right toolbar and call the slider function to add a function to this
     def right_tool_bar(self):
         self.right_toolbar.setIconSize(QSize(24, 24))
@@ -207,7 +211,6 @@ class MainWindow(QMainWindow):
     # this can be paired with the left click to get the location to pan the item to!
     def mouseMoveEvent(self, e):
         print("mouse moved", e.pos())
-
 
 
 
