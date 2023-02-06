@@ -9,7 +9,7 @@ from PyQt6.QtWidgets import (
     QMenu,
     QToolBar, QStatusBar, QFileDialog
 )
-
+from niiloader import *
 # Setting a base directory for when generating a pyinstaller file
 basedir = os.path.dirname(__file__)
 
@@ -160,6 +160,13 @@ class MainWindow(QMainWindow):
     def importButtonClick(self):
         importfile_direct = self.getFileName()
         print("import button pressed!", importfile_direct)
+        image_data = loadFile(importfile_direct[0])
+        colormap = 'gray'
+        showSlice(image_data, 45, colormap)
+
+    def color_map_setting(self):
+        # TODO - hold all of the color map as a dropdown maybe? Or just hold the data
+        end
 
     @staticmethod
     def edit_button_click():
