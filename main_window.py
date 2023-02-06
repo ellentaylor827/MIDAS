@@ -196,7 +196,7 @@ class MainWindow(QMainWindow):
         # Bijoy Bakae - textbox
 
         layout = QVBoxLayout()
-        self.setLayout(layout)
+        # self.setLayout(layout)
 
         self.textbox = QTextEdit(self)
         self.textbox.setPlaceholderText("Enter some text")
@@ -206,11 +206,9 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.textbox)
 
     def resizeEvent(self, event):
-        self.textbox.resize(event.size().width() / 5, event.size().height() / 5)
+        self.textbox.resize(int(event.size().width() / 5), int(event.size().height() / 5))
         x = event.size().width() - self.textbox.geometry().width() - 25
         self.textbox.move(x, 7)
-
-
 
     def mousePressEvent(self, e):
         print("mouse pressed")
