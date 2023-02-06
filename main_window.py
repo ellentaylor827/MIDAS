@@ -44,7 +44,8 @@ class MainWindow(QMainWindow):
         self.save_icon.triggered.connect(self.saveButtonClick)
         self.import_icon = QAction(QIcon(os.path.join(basedir, "iconFiles", "folder.png")), "Import", self)
         self.import_icon.triggered.connect(self.importButtonClick)
-
+        self.comment_icon = QAction(QIcon(os.path.join(basedir, "iconFiles", "folder.png")), "Import", self)
+        self.comment_icon.triggered.connect(self.textBoxHideButton)
         # creating toolbar items
         self.left_toolbar = QToolBar()
         self.right_toolbar = QToolBar()
@@ -92,10 +93,13 @@ class MainWindow(QMainWindow):
         # Creating the second button
         self.left_toolbar.addAction(self.edit_icon)
 
+        # Creating the comment button
+        self.left_toolbar.addAction(self.comment_icon)
+
         # Ensuring that only 1 button (edit or pan) is selected at one time
         self.hand_icon.toggled.connect(self.edit_icon.setDisabled)
         self.edit_icon.toggled.connect(self.hand_icon.setDisabled)
-
+        self.comment_icon.toggled.connect(self.comment_icon.setDisabled)
     def slider(self):
         # Creating a slider widget, it is then set to have a range of 1 to 200. This is now set to the central widget
         # for testing but will be moved into a toolbar on the right in the future
@@ -213,16 +217,19 @@ class MainWindow(QMainWindow):
 
     def comment_box(self):
         # Bijoy Bakae - textbox
-
         layout = QVBoxLayout()
         # self.setLayout(layout)
-
         self.textbox = QTextEdit(self)
         self.textbox.setPlaceholderText("Enter some text")
         self.textbox.move(1050, 7)
-
         self.textbox.setUndoRedoEnabled(True)
         layout.addWidget(self.textbox)
+
+    def textBoxHideButton(self):
+        if(self.textbox.isHidden()):
+            self.textbox.show()
+        else:
+            self.textbox.hide()
 
     def resizeEvent(self, event):
         self.textbox.resize(int(event.size().width() / 5), int(event.size().height() / 5))
