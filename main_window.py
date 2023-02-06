@@ -7,12 +7,15 @@ from PyQt6.QtWidgets import (
     QMainWindow,
     QSlider,
     QMenu,
-    QToolBar, QStatusBar, QFileDialog, QHBoxLayout, QTextEdit, QVBoxLayout, QLineEdit, QLabel
+    QToolBar, QStatusBar, QFileDialog, QHBoxLayout, QTextEdit, QVBoxLayout, QLineEdit, QLabel, QWidget
 )
 from niiloader import *
+from ImageDisplay import *
 # Setting a base directory for when generating a pyinstaller file
 basedir = os.path.dirname(__file__)
 
+from matplotlib.backends.qt_compat import QtWidgets
+from matplotlib.backends.backend_qtagg import NavigationToolbar2QT as NavigationToolbar
 
 # Creating a class that holds everything regarding the MainWindow and toolbars / menu items
 class MainWindow(QMainWindow):
@@ -60,9 +63,6 @@ class MainWindow(QMainWindow):
         # Below used to either enable or disable the status bar that we have set things such as Pan Button or Edit
         # button to
         self.setStatusBar(QStatusBar(self))
-
-        self.comment_box()
-
 
     # Function - self - create a right toolbar and call the slider function to add a function to this
     def right_tool_bar(self):
@@ -166,8 +166,20 @@ class MainWindow(QMainWindow):
         importfile_direct = self.getFileName()
         print("import button pressed!", importfile_direct)
         image_data = loadFile(importfile_direct[0])
-        colormap = 'gray'
-        showSlice(image_data, 45, colormap)
+        # Display Image
+        self.imageDisp.displayImage(image_data[:, :, 45])
+
+    # createImageDisplay method creates a QVboxlayout, Then Creates instance of ImageDisplay class.
+    # Set the width height and resolution Then add the Navigationtoolbar and ImageDisplay Widgets to the layout.
+    # Create a new widget and set its layout to the layout we created.
+    def createImageDisplay(self):
+        layout = QtWidgets.QVBoxLayout()
+        self.imageDisp = ImageDisplay(self, width=20, height=20, dpi=300)
+        layout.addWidget(NavigationToolbar(self.imageDisp))
+        layout.addWidget(self.imageDisp)
+        widget = QWidget()
+        widget.setLayout(layout)
+        self.setCentralWidget(widget)
 
     def color_map_setting(self):
         # TODO - hold all of the color map as a dropdown maybe? Or just hold the data
