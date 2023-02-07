@@ -1,5 +1,4 @@
 import os
-
 import PyQt6
 from PyQt6.QtCore import QSize, Qt, QRect
 from PyQt6.QtGui import QAction, QIcon
@@ -11,11 +10,12 @@ from PyQt6.QtWidgets import (
 )
 from niiloader import *
 from ImageDisplay import *
+from matplotlib.backends.qt_compat import QtWidgets
+from matplotlib.backends.backend_qtagg import NavigationToolbar2QT as NavigationToolbar
+
 # Setting a base directory for when generating a pyinstaller file
 basedir = os.path.dirname(__file__)
 
-from matplotlib.backends.qt_compat import QtWidgets
-from matplotlib.backends.backend_qtagg import NavigationToolbar2QT as NavigationToolbar
 
 # Creating a class that holds everything regarding the MainWindow and toolbars / menu items
 class MainWindow(QMainWindow):
@@ -29,6 +29,8 @@ class MainWindow(QMainWindow):
         super().__init__()
 
         # Setting buttons, icons and triggers on press for all buttons used.
+        self.textbox = None
+        self.imageDisp = None
         self.slider_widget = QSlider()
         self.edit_icon = QAction(QIcon(os.path.join(basedir, "iconFiles", "editIcon.png")), "Draw", self)
         self.edit_icon.triggered.connect(self.edit_button_click)
@@ -64,8 +66,8 @@ class MainWindow(QMainWindow):
         # Below used to either enable or disable the status bar that we have set things such as Pan Button or Edit
         # button to
         self.setStatusBar(QStatusBar(self))
-
-        # Call createImageDisplay to create Widget with QVboxLayout which has the navigationToolBar and ImageDisplay widgets.
+        # Call createImageDisplay to create Widget with QVboxLayout which has the navigationToolBar and
+        # ImageDisplay widgets.
         self.createImageDisplay()
 
         self.comment_box()
@@ -100,6 +102,7 @@ class MainWindow(QMainWindow):
         self.hand_icon.toggled.connect(self.edit_icon.setDisabled)
         self.edit_icon.toggled.connect(self.hand_icon.setDisabled)
         self.comment_icon.toggled.connect(self.comment_icon.setDisabled)
+
     def slider(self):
         # Creating a slider widget, it is then set to have a range of 1 to 200. This is now set to the central widget
         # for testing but will be moved into a toolbar on the right in the future
@@ -188,7 +191,8 @@ class MainWindow(QMainWindow):
         widget.setLayout(layout)
         self.setCentralWidget(widget)
 
-    def color_map_setting(self):
+    @staticmethod
+    def color_map_setting():
         # TODO - hold all of the color map as a dropdown maybe? Or just hold the data
         end
 
@@ -226,7 +230,7 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.textbox)
 
     def textBoxHideButton(self):
-        if(self.textbox.isHidden()):
+        if self.textbox.isHidden():
             self.textbox.show()
         else:
             self.textbox.hide()
