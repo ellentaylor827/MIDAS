@@ -237,8 +237,8 @@ class MainWindow(QMainWindow):
 
     def resizeEvent(self, event):
         self.textbox.resize(int(event.size().width() / 5), int(event.size().height() / 5))
-        x = event.size().width() - self.textbox.geometry().width() - 25
-        self.textbox.move(x, 7)
+        x = event.size().width() - self.textbox.geometry().width() - 32
+        self.textbox.move(x, 65)
 
     def mousePressEvent(self, e):
         print("mouse pressed")
