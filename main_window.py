@@ -1,5 +1,4 @@
 import os
-
 import PyQt6
 from PyQt6.QtCore import QSize, Qt, QRect
 from PyQt6.QtGui import QAction, QIcon
@@ -11,11 +10,12 @@ from PyQt6.QtWidgets import (
 )
 from niiloader import *
 from ImageDisplay import *
+from matplotlib.backends.qt_compat import QtWidgets
+from matplotlib.backends.backend_qtagg import NavigationToolbar2QT as NavigationToolbar
+
 # Setting a base directory for when generating a pyinstaller file
 basedir = os.path.dirname(__file__)
 
-from matplotlib.backends.qt_compat import QtWidgets
-from matplotlib.backends.backend_qtagg import NavigationToolbar2QT as NavigationToolbar
 
 # Creating a class that holds everything regarding the MainWindow and toolbars / menu items
 class MainWindow(QMainWindow):
@@ -29,6 +29,8 @@ class MainWindow(QMainWindow):
         super().__init__()
 
         # Setting buttons, icons and triggers on press for all buttons used.
+        self.textbox = None
+        self.imageDisp = None
         self.slider_widget = QSlider()
         self.edit_icon = QAction(QIcon(os.path.join(basedir, "iconFiles", "editIcon.png")), "Draw", self)
         self.edit_icon.triggered.connect(self.edit_button_click)
@@ -44,7 +46,8 @@ class MainWindow(QMainWindow):
         self.save_icon.triggered.connect(self.saveButtonClick)
         self.import_icon = QAction(QIcon(os.path.join(basedir, "iconFiles", "folder.png")), "Import", self)
         self.import_icon.triggered.connect(self.importButtonClick)
-
+        self.comment_icon = QAction(QIcon(os.path.join(basedir, "iconFiles", "folder.png")), "Import", self)
+        self.comment_icon.triggered.connect(self.textBoxHideButton)
         # creating toolbar items
         self.left_toolbar = QToolBar()
         self.right_toolbar = QToolBar()
@@ -63,8 +66,8 @@ class MainWindow(QMainWindow):
         # Below used to either enable or disable the status bar that we have set things such as Pan Button or Edit
         # button to
         self.setStatusBar(QStatusBar(self))
-
-        # Call createImageDisplay to create Widget with QVboxLayout which has the navigationToolBar and ImageDisplay widgets.
+        # Call createImageDisplay to create Widget with QVboxLayout which has the navigationToolBar and
+        # ImageDisplay widgets.
         self.createImageDisplay()
 
         self.comment_box()
@@ -92,9 +95,13 @@ class MainWindow(QMainWindow):
         # Creating the second button
         self.left_toolbar.addAction(self.edit_icon)
 
+        # Creating the comment button
+        self.left_toolbar.addAction(self.comment_icon)
+
         # Ensuring that only 1 button (edit or pan) is selected at one time
         self.hand_icon.toggled.connect(self.edit_icon.setDisabled)
         self.edit_icon.toggled.connect(self.hand_icon.setDisabled)
+        self.comment_icon.toggled.connect(self.comment_icon.setDisabled)
 
     def slider(self):
         # Creating a slider widget, it is then set to have a range of 1 to 200. This is now set to the central widget
@@ -184,7 +191,8 @@ class MainWindow(QMainWindow):
         widget.setLayout(layout)
         self.setCentralWidget(widget)
 
-    def color_map_setting(self):
+    @staticmethod
+    def color_map_setting():
         # TODO - hold all of the color map as a dropdown maybe? Or just hold the data
         end
 
@@ -213,21 +221,24 @@ class MainWindow(QMainWindow):
 
     def comment_box(self):
         # Bijoy Bakae - textbox
-
         layout = QVBoxLayout()
         # self.setLayout(layout)
-
         self.textbox = QTextEdit(self)
         self.textbox.setPlaceholderText("Enter some text")
         self.textbox.move(1050, 7)
-
         self.textbox.setUndoRedoEnabled(True)
         layout.addWidget(self.textbox)
 
+    def textBoxHideButton(self):
+        if self.textbox.isHidden():
+            self.textbox.show()
+        else:
+            self.textbox.hide()
+
     def resizeEvent(self, event):
         self.textbox.resize(int(event.size().width() / 5), int(event.size().height() / 5))
-        x = event.size().width() - self.textbox.geometry().width() - 25
-        self.textbox.move(x, 7)
+        x = event.size().width() - self.textbox.geometry().width() - 32
+        self.textbox.move(x, 65)
 
     def mousePressEvent(self, e):
         print("mouse pressed")
