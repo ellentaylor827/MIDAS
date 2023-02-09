@@ -46,8 +46,9 @@ class MainWindow(QMainWindow):
         self.save_icon.triggered.connect(self.saveButtonClick)
         self.import_icon = QAction(QIcon(os.path.join(basedir, "iconFiles", "folder.png")), "Import", self)
         self.import_icon.triggered.connect(self.importButtonClick)
-        self.comment_icon = QAction(QIcon(os.path.join(basedir, "iconFiles", "folder.png")), "Import", self)
+        self.comment_icon = QAction(QIcon(os.path.join(basedir, "iconFiles", "comment.png")), "Import", self)
         self.comment_icon.triggered.connect(self.textBoxHideButton)
+        self.comment_icon.setStatusTip("Comment Button")
         # creating toolbar items
         self.left_toolbar = QToolBar()
         self.right_toolbar = QToolBar()
@@ -261,6 +262,10 @@ class MainWindow(QMainWindow):
     @staticmethod
     def redo():
         print("redo")
+
+    def exit(self):
+        self.close()
+        sys.exit()
 
     # File handling was heavily inspired by the following source:
     # https://learndataanalysis.org/source-code-how-to-use-qfiledialog-to-select-files-in-pyqt6/ icon attribution: <a
