@@ -229,11 +229,6 @@ class MainWindow(QMainWindow):
         else:
             self.textbox.hide()
 
-    def zoomButtonClick(self):
-        print("zoom button pressed!")
-        # TODO - make sure that this will first disable the pan/hand button
-        NavigationToolbar(self.imageDisp).zoom()
-
     def resizeEvent(self, event):
         self.textbox.resize(int(event.size().width() / 5), int(event.size().height() / 5))
         x = event.size().width() - self.textbox.geometry().width() - 32
