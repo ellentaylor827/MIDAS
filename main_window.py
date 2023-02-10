@@ -12,6 +12,7 @@ from niiloader import *
 from ImageDisplay import *
 from matplotlib.backends.qt_compat import QtWidgets
 from matplotlib.backends.backend_qtagg import NavigationToolbar2QT as NavigationToolbar
+from matplotlib.backend_bases import NavigationToolbar2 as backendNavToolbar
 
 # Setting a base directory for when generating a pyinstaller file
 basedir = os.path.dirname(__file__)
@@ -49,8 +50,6 @@ class MainWindow(QMainWindow):
         self.comment_icon = QAction(QIcon(os.path.join(basedir, "iconFiles", "comment.png")), "Import", self)
         self.comment_icon.triggered.connect(self.textBoxHideButton)
         self.comment_icon.setStatusTip("Comment Button")
-        self.zoom_icon = QAction(QIcon(os.path.join(basedir, "iconFiles", "zoom.png")), "Zoom", self)
-        self.zoom_icon.triggered.connect(self.zoomButtonClick)
         # creating toolbar items
         self.left_toolbar = QToolBar()
         self.right_toolbar = QToolBar()
@@ -94,9 +93,6 @@ class MainWindow(QMainWindow):
         # Creating 2 buttons, Hand and edit with their respective icons. We need to use filepath for any respective
         # file paths such as icons as it will not be portable when creating .exe files
         self.left_toolbar.addAction(self.hand_icon)
-
-        # Creating the zoom button
-        self.left_toolbar.addAction(self.zoom_icon)
 
         # Creating the second button
         self.left_toolbar.addAction(self.edit_icon)
@@ -191,7 +187,7 @@ class MainWindow(QMainWindow):
     def createImageDisplay(self):
         layout = QtWidgets.QVBoxLayout()
         self.imageDisp = ImageDisplay(self, width=20, height=20, dpi=300)
-        # layout.addWidget(NavigationToolbar(self.imageDisp))
+        layout.addWidget(NavigationToolbar(self.imageDisp))
         layout.addWidget(self.imageDisp)
         widget = QWidget()
         widget.setLayout(layout)
@@ -200,26 +196,18 @@ class MainWindow(QMainWindow):
     @staticmethod
     def color_map_setting():
         # TODO - hold all of the color map as a dropdown maybe? Or just hold the data
-        end
+        pass
 
     @staticmethod
     def edit_button_click():
         # make sure that this will first disable the pan/hand button
         print("Edit button pressed!")
 
-    @staticmethod
-    def hand_button_click():
+    def hand_button_click(self):
         # make sure that this will first disable the edit button
         print("hand button clicked!")
-
-    # Setting the right click menu items
-    def contextMenuEvent(self, e):
-        context = QMenu(self)
-
-        context.addAction(self.undo_icon)
-        context.addAction(self.redo_icon)
-
-        context.exec(e.globalPos())
+        # TODO - make sure that this will first disable the pan/hand button
+        NavigationToolbar(self.imageDisp).pan()
 
     # this can be paired with the left click to get the location to pan the item to!
     def mouseMoveEvent(self, e):
@@ -243,7 +231,8 @@ class MainWindow(QMainWindow):
 
     def zoomButtonClick(self):
         print("zoom button pressed!")
-        pass
+        # TODO - make sure that this will first disable the pan/hand button
+        NavigationToolbar(self.imageDisp).zoom()
 
     def resizeEvent(self, event):
         self.textbox.resize(int(event.size().width() / 5), int(event.size().height() / 5))
