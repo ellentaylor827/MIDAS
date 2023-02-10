@@ -187,7 +187,7 @@ class MainWindow(QMainWindow):
     def createImageDisplay(self):
         layout = QtWidgets.QVBoxLayout()
         self.imageDisp = ImageDisplay(self, width=20, height=20, dpi=300)
-        layout.addWidget(NavigationToolbar(self.imageDisp))
+        # layout.addWidget(NavigationToolbar(self.imageDisp))
         layout.addWidget(self.imageDisp)
         widget = QWidget()
         widget.setLayout(layout)
@@ -206,7 +206,7 @@ class MainWindow(QMainWindow):
     def hand_button_click(self):
         # make sure that this will first disable the edit button
         print("hand button clicked!")
-        # TODO - make sure that this will first disable the pan/hand button
+        # TODO - make sure that this will first disable the drawing button
         NavigationToolbar(self.imageDisp).pan()
 
     # this can be paired with the left click to get the location to pan the item to!
