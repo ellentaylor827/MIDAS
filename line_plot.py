@@ -6,6 +6,16 @@ def linePlot(x, y):
     #plots and draws the line
     plt.plot(x, y, marker='.', color="Yellow")
     fig.canvas.draw()
+    getGradiant(x,y)
+
+#used to find the gradient of the perpedicular line
+def getGradiant(x,y):
+    #finds the gradient on the original line
+    xDifference = x[1] - x[0]
+    yDifference = y[1] - y[0]
+    gradient = yDifference / xDifference
+    #finds perpedicular bisector gradient
+    bisectorGradient = -xDifference / yDifference
 
 #checks for mouse click
 def click_event(e):
