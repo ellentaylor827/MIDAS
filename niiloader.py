@@ -15,6 +15,12 @@ def loadHeader(filename):
     print(nifty.header)
     return nifty
 
+def totalAxialSlice(filename):
+    nifty = nib.load(filename)
+    max = nifty.header['dim'][3]
+    return max
+
+
 #  TODO - make this save to the nifti file and set the comment field to save to this every time it is changed - TBC -
 #   set a flag to check if it has been changed - set a hard limit of 80 char to the text box
 def saveText(filename, text):

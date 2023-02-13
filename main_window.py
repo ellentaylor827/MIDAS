@@ -8,6 +8,8 @@ from PyQt6.QtWidgets import (
     QMenu,
     QToolBar, QStatusBar, QFileDialog, QWidget, QHBoxLayout, QTextEdit, QVBoxLayout, QLineEdit, QLabel
 )
+
+import niiloader
 from niiloader import *
 from ImageDisplay import *
 from matplotlib.backends.qt_compat import QtWidgets
@@ -58,10 +60,9 @@ class MainWindow(QMainWindow):
         width = 1280
         height = 720
         self.setMinimumSize(width, height)
-
+        self.totalAxialSlice = 0
         # This is calling the left_tool_bar function which is then populating the left toolbar with the buttons
         self.left_tool_bar()
-        self.right_tool_bar()
         self.top_main_menu()
 
         # Below used to either enable or disable the status bar that we have set things such as Pan Button or Edit
@@ -104,10 +105,10 @@ class MainWindow(QMainWindow):
         self.edit_icon.toggled.connect(self.hand_icon.setDisabled)
         self.comment_icon.toggled.connect(self.comment_icon.setDisabled)
 
-    def slider(self):
+    def slider(self, minimum=0, maximum=200):
         # Creating a slider widget, it is then set to have a range of 1 to 200. This is now set to the central widget
         # for testing but will be moved into a toolbar on the right in the future
-        self.slider_widget.setRange(1, 200)
+        self.slider_widget.setRange(minimum, self.totalAxialSlice-1)
         # TODO - set 200 to the size of the nii file after importing an image
         self.slider_widget.setSingleStep(1)
         # this thing here occurs on click and scroll - use this one for everything.
@@ -180,6 +181,8 @@ class MainWindow(QMainWindow):
         # Display Image
         # TODO - make this a setting in the settings menu as to the default slice to be showed
         self.DisplayImageSlice(0)
+        self.totalAxialSlice = niiloader.totalAxialSlice(importfile_direct[0])
+        self.right_tool_bar()
 
     def DisplayImageSlice(self, i):
         self.imageDisp.displayImage(self.image_data[:, :, i])
