@@ -52,7 +52,7 @@ class MainWindow(QMainWindow):
         # creating toolbar items
         self.left_toolbar = QToolBar()
         self.right_toolbar = QToolBar()
-
+        self.image_data = None
         # setting window title and min size (used to prevent UI being hidden from user)
         self.setWindowTitle("Widgets App")
         width = 1280
@@ -176,9 +176,14 @@ class MainWindow(QMainWindow):
     def importButtonClick(self):
         importfile_direct = self.getFileName()
         print("import button pressed!", importfile_direct)
-        image_data = loadFile(importfile_direct[0])
+        self.image_data = loadFile(importfile_direct[0])
         # Display Image
-        self.imageDisp.displayImage(image_data[:, :, 45])
+        # TODO - make this a setting in the settings menu as to the default slice to be showed
+        self.DisplayImageSlice(0)
+
+    def DisplayImageSlice(self, i):
+        self.imageDisp.displayImage(self.image_data[:, :, i])
+
 
     # createImageDisplay method creates a QVboxlayout, Then Creates instance of ImageDisplay class.
     # Set the width height and resolution Then add the Navigationtoolbar and ImageDisplay Widgets to the layout.
@@ -251,8 +256,8 @@ class MainWindow(QMainWindow):
     def mouseDoubleClickEvent(self, e):
         print("mouse double clicked")
 
-    @staticmethod
-    def slider_value_change(i):
+    def slider_value_change(self, i):
+        self.DisplayImageSlice(i)
         print(i)
 
     @staticmethod
