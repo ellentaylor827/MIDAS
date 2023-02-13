@@ -6,7 +6,7 @@ from PyQt6.QtWidgets import (
     QMainWindow,
     QSlider,
     QMenu,
-    QToolBar, QStatusBar, QFileDialog, QWidget, QHBoxLayout, QTextEdit, QVBoxLayout, QLineEdit, QLabel
+    QToolBar, QStatusBar, QFileDialog, QWidget, QHBoxLayout, QTextEdit, QVBoxLayout, QLineEdit, QLabel, QPushButton
 )
 
 import niiloader
@@ -32,15 +32,15 @@ class MainWindow(QMainWindow):
         super().__init__()
 
         # Setting buttons, icons and triggers on press for all buttons used.
+        self.Panel = None
+        self.text_edit = None
         self.textbox = None
         self.imageDisp = None
         self.slider_widget = QSlider()
         self.edit_icon = QAction(QIcon(os.path.join(basedir, "iconFiles", "editIcon.png")), "Draw", self)
         self.edit_icon.triggered.connect(self.edit_button_click)
-        self.edit_icon.setStatusTip("Edit Button")
         self.hand_icon = QAction(QIcon(os.path.join(basedir, "iconFiles", "handIcon.png")), "Pan", self)
         self.hand_icon.triggered.connect(self.hand_button_click)
-        self.hand_icon.setStatusTip("Pan Button")
         self.undo_icon = QAction(QIcon(os.path.join(basedir, "iconFiles", "undo.png")), "Undo", self)
         self.undo_icon.triggered.connect(self.undo)
         self.redo_icon = QAction(QIcon(os.path.join(basedir, "iconFiles", "redo.png")), "Redo", self)
@@ -49,9 +49,12 @@ class MainWindow(QMainWindow):
         self.save_icon.triggered.connect(self.saveButtonClick)
         self.import_icon = QAction(QIcon(os.path.join(basedir, "iconFiles", "folder.png")), "Import", self)
         self.import_icon.triggered.connect(self.importButtonClick)
-        self.comment_icon = QAction(QIcon(os.path.join(basedir, "iconFiles", "comment.png")), "Import", self)
+        self.comment_icon = QAction(QIcon(os.path.join(basedir, "iconFiles", "folder.png")), "Comment Box/Panel", self)
         self.comment_icon.triggered.connect(self.textBoxHideButton)
-        self.comment_icon.setStatusTip("Comment Button")
+
+        # status tip
+        self.status_tip()
+
         # creating toolbar items
         self.left_toolbar = QToolBar()
         self.right_toolbar = QToolBar()
@@ -74,6 +77,8 @@ class MainWindow(QMainWindow):
         self.createImageDisplay()
 
         self.comment_box()
+
+        self.Stat_Panel()
 
     # Function - self - create a right toolbar and call the slider function to add a function to this
     def right_tool_bar(self):
@@ -113,7 +118,6 @@ class MainWindow(QMainWindow):
         self.slider_widget.setSingleStep(1)
         # this thing here occurs on click and scroll - use this one for everything.
         self.slider_widget.valueChanged.connect(self.slider_value_change)
-
         # This thing here occurs on click - kept here if we need it in the future
         # slider_widget.sliderMoved.connect(self.slider_position)
         return self.slider_widget
@@ -221,7 +225,7 @@ class MainWindow(QMainWindow):
         print("mouse moved", e.pos())
 
     def comment_box(self):
-        # Bijoy Bakae - textbox
+        # Bijoy Bakar - textbox
         layout = QVBoxLayout()
         # self.setLayout(layout)
         self.textbox = QTextEdit(self)
@@ -233,13 +237,22 @@ class MainWindow(QMainWindow):
     def textBoxHideButton(self):
         if self.textbox.isHidden():
             self.textbox.show()
+            self.Panel.show()
         else:
             self.textbox.hide()
+            self.Panel.hide()
 
     def resizeEvent(self, event):
+        # Comment Box
         self.textbox.resize(int(event.size().width() / 5), int(event.size().height() / 5))
         x = event.size().width() - self.textbox.geometry().width() - 32
         self.textbox.move(x, 65)
+
+        # Stat Panel
+        self.Panel.resize(int(event.size().width() / 5), int(event.size().height() / 6.5))
+        x = event.size().width() - self.Panel.geometry().width() - 32
+        y = self.textbox.geometry().y() + self.textbox.geometry().height()
+        self.Panel.move(x, y)
 
     def mousePressEvent(self, e):
         print("mouse pressed")
@@ -266,6 +279,26 @@ class MainWindow(QMainWindow):
     def exit(self):
         self.close()
         sys.exit()
+
+    # bijoy
+    def status_tip(self):
+        self.hand_icon.setStatusTip("Pan Button")
+        self.edit_icon.setStatusTip("Edit Button")
+        self.slider_widget.setStatusTip("Slider")
+        self.comment_icon.setStatusTip("Comment Box/Panel")
+        self.save_icon.setStatusTip("Save")
+        self.import_icon.setStatusTip("Import")
+        self.redo_icon.setStatusTip("Redo")
+        self.undo_icon.setStatusTip("Undo")
+
+    def Stat_Panel(self):
+        # Bijoy Bakar - `Stat Panel
+        layout = QVBoxLayout()
+        self.Panel = QTextEdit(self)
+        # this is how you would add the values text_box.setText(f"The value is {value}")
+        self.Panel.setText("Diameter: \n\nX-Coordinates:  \n\nY-Coordinates: ")
+        self.Panel.setReadOnly(True)
+        layout.addWidget(self.Panel)
 
     # File handling was heavily inspired by the following source:
     # https://learndataanalysis.org/source-code-how-to-use-qfiledialog-to-select-files-in-pyqt6/ icon attribution: <a
