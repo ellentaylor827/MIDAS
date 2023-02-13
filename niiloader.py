@@ -29,6 +29,8 @@ def saveText(filename, text):
     nifty.header['descrip'] = text
     print(nifty.header['descrip'])
     nib.save(nifty, filename)
+
+
 # TODO - delete in the future when not being used as reference to anything else
 
 # # placeholder function that plots and displays the file using pyplot
