@@ -245,12 +245,12 @@ class MainWindow(QMainWindow):
     def resizeEvent(self, event):
         # Comment Box
         self.textbox.resize(int(event.size().width() / 5), int(event.size().height() / 5))
-        x = event.size().width() - self.textbox.geometry().width() - 32
-        self.textbox.move(x, 65)
+        x = event.size().width() - self.textbox.geometry().width() - 11
+        self.textbox.move(x, 11)
 
         # Stat Panel
         self.Panel.resize(int(event.size().width() / 5), int(event.size().height() / 6.5))
-        x = event.size().width() - self.Panel.geometry().width() - 32
+        x = event.size().width() - self.Panel.geometry().width() - 11
         y = self.textbox.geometry().y() + self.textbox.geometry().height()
         self.Panel.move(x, y)
 
