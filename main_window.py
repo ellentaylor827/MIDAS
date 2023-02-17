@@ -181,12 +181,18 @@ class MainWindow(QMainWindow):
     def importButtonClick(self):
         importfile_direct = self.getFileName()
         print("import button pressed!", importfile_direct)
-        self.image_data = loadFile(importfile_direct[0])
-        # Display Image
-        # TODO - make this a setting in the settings menu as to the default slice to be showed
-        self.DisplayImageSlice(0)
-        self.totalAxialSlice = niiloader.totalAxialSlice(importfile_direct[0])
-        self.right_tool_bar()
+
+        # Check that a file has been selected and stored in tuple index 0
+        # if it is empty, cancel or nothing has been selected, pass to avoid crash
+        if importfile_direct[0] == '':
+            pass
+        else:
+            self.image_data = loadFile(importfile_direct[0])
+            # Display Image
+            # TODO - make this a setting in the settings menu as to the default slice to be showed
+            self.DisplayImageSlice(0)
+            self.totalAxialSlice = niiloader.totalAxialSlice(importfile_direct[0])
+            self.right_tool_bar()
 
     def DisplayImageSlice(self, i):
         self.imageDisp.displayImage(self.image_data[:, :, i])
