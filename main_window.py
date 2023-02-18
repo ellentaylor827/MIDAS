@@ -51,6 +51,8 @@ class MainWindow(QMainWindow):
         self.import_icon.triggered.connect(self.importButtonClick)
         self.comment_icon = QAction(QIcon(os.path.join(basedir, "iconFiles", "folder.png")), "Comment Box/Panel", self)
         self.comment_icon.triggered.connect(self.textBoxHideButton)
+        self.settings_icon = QAction(QIcon(os.path.join(basedir, "iconFiles", "setting.png")), "Settings", self)
+        self.settings_icon.triggered.connect(main.settingsClick())
 
         # status tip
         self.status_tip()
@@ -129,6 +131,7 @@ class MainWindow(QMainWindow):
         edit_menu = menu.addMenu("&Edit")
         file_menu.addAction(self.save_icon)
         file_menu.addAction(self.import_icon)
+        file_menu.addAction(self.settings_icon)
         edit_menu.addAction(self.undo_icon)
         edit_menu.addAction(self.redo_icon)
         edit_menu.addAction(self.edit_icon)
