@@ -2,6 +2,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
+from settingsWindow import SettingsWindow
 matplotlib.use('Qt5Agg')
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
@@ -22,6 +23,8 @@ class ImageDisplay(FigureCanvasQTAgg):
         self.axes = self.fig.add_subplot(111)
         #self.axes.clear()
         self.axes.axis('off')
+        settings = SettingsWindow()
+        self.colourMap = settings.returnColourmap()
 
         # Draw the plot.
         plt.draw()
@@ -29,8 +32,10 @@ class ImageDisplay(FigureCanvasQTAgg):
 
     # displayImage method takes a slice (image) and renders this to the ImageDisplay Class.
     def displayImage(self, slice):
+        settings = SettingsWindow()
+        self.colourMap = settings.returnColourmap()
         self.axes.clear()
         self.axes.axis('off')
-        self.axes.imshow(slice)
+        self.axes.imshow(slice, cmap=self.colourMap)
         self.draw()
 

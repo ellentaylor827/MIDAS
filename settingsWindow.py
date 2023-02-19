@@ -1,21 +1,23 @@
 # Creating a pyqt6 window that will hold settings for the application
 
-from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QFormLayout, QVBoxLayout, QWidget, QGridLayout, QComboBox
+from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QFormLayout, QVBoxLayout, QWidget, \
+    QGridLayout, QComboBox
 from PyQt6.QtCore import (Qt, QCoreApplication, QSettings, QTranslator, QLocale, QLibraryInfo)
 from PyQt6.QtGui import (QIcon, QPalette, QColor)
 import sys
 import os
 import json
-import ImageDisplay
+
+import main_window
 
 basedir = os.path.dirname(__file__)
+colourmap_outside_class = "gray"
 
 
 class SettingsWindow(QWidget):
 
     def __init__(self):
         super().__init__()
-
         # set window title
         self.setWindowTitle("Settings")
 
@@ -33,7 +35,7 @@ class SettingsWindow(QWidget):
 
         # set window layout and widgets
         self.layout = QFormLayout()
-        self.layout.setContentsMargins(1,0,0,0)
+        self.layout.setContentsMargins(1, 0, 0, 0)
         self.layout.setSpacing(20)
         self.setLayout(self.layout)
 
@@ -42,13 +44,13 @@ class SettingsWindow(QWidget):
         self.combobox.addItems(['gray', 'bone', 'Spectral', 'rainbow'])
         # setting the current index to the one required...
         print("The current colourmap is: " + self.colourmap)
-        if self.colourmap == "One":
+        if self.colourmap == "gray":
             self.combobox.setCurrentIndex(0)
-        elif self.colourmap == "Two":
+        elif self.colourmap == "bone":
             self.combobox.setCurrentIndex(1)
-        elif self.colourmap == "Three":
+        elif self.colourmap == "Spectral":
             self.combobox.setCurrentIndex(2)
-        elif self.colourmap == "Four":
+        elif self.colourmap == "rainbow":
             self.combobox.setCurrentIndex(3)
         else:
             self.combobox.setCurrentIndex(0)
@@ -74,7 +76,7 @@ class SettingsWindow(QWidget):
 
     def comboboxChanged(self):
         self.colourmap = self.combobox.currentText()
-        ImageDisplay.colourmap = self.colourmap
+        colourmap_outside_class = self.colourmap
 
     def importSettings(self):
         # import settings from settings.json
@@ -85,7 +87,7 @@ class SettingsWindow(QWidget):
             for key, value in self.settings_file.items():
                 if key == "colourmap":
                     self.colourmap = value
-                    ImageDisplay.colourmap = self.colourmap
+                    colourmap_outside_class = self.colourmap
                 elif key == "setting2":
                     self.setting2 = value
                 elif key == "setting3":
@@ -108,7 +110,7 @@ class SettingsWindow(QWidget):
             return
         # save settings to settings.json
         self.settings_file["colourmap"] = self.colourmap
-        ImageDisplay.colourmap = self.colourmap
+        colourmap_outside_class = self.colourmap
         self.settings_file["setting2"] = self.setting2
         self.settings_file["setting3"] = "test"
         self.settings_file["setting4"] = "test"
@@ -121,3 +123,6 @@ class SettingsWindow(QWidget):
         # show error message
         self.layout.addWidget(QLabel(message))
         pass
+
+    def returnColourmap(self):
+        return self.colourmap
