@@ -37,7 +37,7 @@ class MainWindow(QMainWindow):
         # Setting buttons, icons and triggers on press for all buttons used.
         self.Panel = None
         self.text_edit = None
-        self.textbox = None
+        self.textbox = QTextEdit()
         self.imageDisp = None
         self.slider_widget = QSlider()
         self.edit_icon = QAction(QIcon(os.path.join(basedir, "iconFiles", "editIcon.png")), "Draw", self)
@@ -80,8 +80,6 @@ class MainWindow(QMainWindow):
         # Call createImageDisplay to create Widget with QVboxLayout which has the navigationToolBar and
         # ImageDisplay widgets.
         self.createImageDisplay()
-
-        self.comment_box()
 
         self.Stat_Panel()
 
@@ -190,7 +188,7 @@ class MainWindow(QMainWindow):
 
         # Check that a file has been selected and stored in tuple index 0
         # if it is empty, cancel or nothing has been selected, pass to avoid crash
-        if self.importfile_direct[0] == '':
+        if self.importfile_direct[0] == "":
             pass
         else:
             self.image_data = loadFile(self.importfile_direct[0])
@@ -199,6 +197,7 @@ class MainWindow(QMainWindow):
             self.DisplayImageSlice(0)
             self.totalAxialSlice = niiloader.totalAxialSlice(self.importfile_direct[0])
             self.right_tool_bar()
+            self.comment_box()
 
     def DisplayImageSlice(self, i):
         self.imageDisp.displayImage(self.image_data[:, :, i])
@@ -240,10 +239,21 @@ class MainWindow(QMainWindow):
         layout = QVBoxLayout()
         # self.setLayout(layout)
         self.textbox = QTextEdit(self)
-        self.textbox.setPlaceholderText("Enter some text")
+        if not self.importfile_direct:
+            self.textbox.setPlaceholderText("Enter text here")
+        else:
+            self.textbox.setText(loadText(self.importfile_direct[0]))
+        # print textbox data
+        self.textbox.textChanged.connect(self.onChanged)
         self.textbox.move(1050, 7)
         self.textbox.setUndoRedoEnabled(True)
         layout.addWidget(self.textbox)
+
+    def onChanged(self):
+        niiloader.saveText(self.importfile_direct[0], self.textbox.toPlainText())
+        # TODO - make this save to the header of the file (could be slow though)
+        print(self.textbox.toPlainText())
+
 
     def textBoxHideButton(self):
         if self.textbox.isHidden():
@@ -337,6 +347,10 @@ class MainWindow(QMainWindow):
             self.resize(1281, 721)
             # Display Image
             # self.DisplayImageSlice(0)
+
+
+    def return_comment_box_data(self):
+        self.textbox
 
 # File handling was heavily inspired by the following source:
 # https://learndataanalysis.org/source-code-how-to-use-qfiledialog-to-select-files-in-pyqt6/ icon attribution: <a

@@ -12,8 +12,13 @@ def loadFile(filename):
 
 def loadHeader(filename):
     nifty = nib.load(filename)
-    # print(nifty.header)
+    print(nifty.header)
     return nifty
+
+
+def loadText(filename):
+    nifty = nib.load(filename)
+    return str(nifty.header['descrip'])
 
 
 def totalAxialSlice(filename):
