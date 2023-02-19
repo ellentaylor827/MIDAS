@@ -12,6 +12,7 @@ from PyQt6.QtWidgets import (
 import niiloader
 from niiloader import *
 from ImageDisplay import *
+from settingsWindow import *
 from matplotlib.backends.qt_compat import QtWidgets
 from matplotlib.backends.backend_qtagg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.backend_bases import NavigationToolbar2 as backendNavToolbar
@@ -30,6 +31,8 @@ class MainWindow(QMainWindow):
     def __init__(self):
         # Calling the constructor of the parent class.
         super().__init__()
+
+        self.settings_window = None  # No external window yet.
 
         # Setting buttons, icons and triggers on press for all buttons used.
         self.Panel = None
@@ -52,7 +55,7 @@ class MainWindow(QMainWindow):
         self.comment_icon = QAction(QIcon(os.path.join(basedir, "iconFiles", "folder.png")), "Comment Box/Panel", self)
         self.comment_icon.triggered.connect(self.textBoxHideButton)
         self.settings_icon = QAction(QIcon(os.path.join(basedir, "iconFiles", "setting.png")), "Settings", self)
-        self.settings_icon.triggered.connect(main.settingsClick())
+        self.settings_icon.triggered.connect(self.settingsClick)
 
         # status tip
         self.status_tip()
@@ -116,7 +119,7 @@ class MainWindow(QMainWindow):
     def slider(self, minimum=0):
         # Creating a slider widget, it is then set to have a range of 1 to 200. This is now set to the central widget
         # for testing but will be moved into a toolbar on the right in the future
-        self.slider_widget.setRange(minimum, self.totalAxialSlice-1)
+        self.slider_widget.setRange(minimum, self.totalAxialSlice - 1)
         self.slider_widget.setSingleStep(1)
         # this thing here occurs on click and scroll - use this one for everything.
         self.slider_widget.valueChanged.connect(self.slider_value_change)
@@ -199,7 +202,6 @@ class MainWindow(QMainWindow):
 
     def DisplayImageSlice(self, i):
         self.imageDisp.displayImage(self.image_data[:, :, i])
-
 
     # createImageDisplay method creates a QVboxlayout, Then Creates instance of ImageDisplay class.
     # Set the width height and resolution Then add the Navigationtoolbar and ImageDisplay Widgets to the layout.
@@ -309,7 +311,15 @@ class MainWindow(QMainWindow):
         self.Panel.setReadOnly(True)
         layout.addWidget(self.Panel)
 
-    # File handling was heavily inspired by the following source:
-    # https://learndataanalysis.org/source-code-how-to-use-qfiledialog-to-select-files-in-pyqt6/ icon attribution: <a
-    # href="https://www.flaticon.com/free-icons/right-arrow" title="right arrow icons">Right arrow icons created by
-    # nahumam - Flaticon</a>
+    # settings window
+    # Setting to None to prevent more than one settings window from opening at a time - prevents settings JSON being
+    # written to multiple times
+    def settingsClick(self):
+        self.settings_window = SettingsWindow()
+        self.settings_window.show()
+
+
+# File handling was heavily inspired by the following source:
+# https://learndataanalysis.org/source-code-how-to-use-qfiledialog-to-select-files-in-pyqt6/ icon attribution: <a
+# href="https://www.flaticon.com/free-icons/right-arrow" title="right arrow icons">Right arrow icons created by
+# nahumam - Flaticon</a>
