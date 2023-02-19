@@ -8,10 +8,7 @@ import sys
 import os
 import json
 
-import main_window
-
 basedir = os.path.dirname(__file__)
-colourmap_outside_class = "gray"
 
 
 class SettingsWindow(QWidget):
@@ -43,7 +40,7 @@ class SettingsWindow(QWidget):
         # TODO - set this to the correct colourMaps - this will need to be double checked with james
         self.combobox.addItems(['gray', 'bone', 'Spectral', 'rainbow'])
         # setting the current index to the one required...
-        print("The current colourmap is: " + self.colourmap)
+        # print("The current colourmap is: " + self.colourmap)
         if self.colourmap == "gray":
             self.combobox.setCurrentIndex(0)
         elif self.colourmap == "bone":
@@ -98,8 +95,8 @@ class SettingsWindow(QWidget):
                     self.noFile = True
                     self.showError("Error: settings file incorrect format")
             json_file.close()
-            print("colourmap: " + self.colourmap)
-            print("setting2: " + self.setting2)
+            # print("colourmap: " + self.colourmap)
+            # print("setting2: " + self.setting2)
         except():
             self.noFile = True
             self.showError("Error: settings file not found")
@@ -125,4 +122,6 @@ class SettingsWindow(QWidget):
         pass
 
     def returnColourmap(self):
+        print("return colour map function: " + self.colourmap)
         return self.colourmap
+

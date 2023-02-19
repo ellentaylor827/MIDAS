@@ -32,8 +32,8 @@ class MainWindow(QMainWindow):
         # Calling the constructor of the parent class.
         super().__init__()
 
+        self.settings_window_been_open = False
         self.settings_window = None  # No external window yet.
-
         # Setting buttons, icons and triggers on press for all buttons used.
         self.Panel = None
         self.text_edit = None
@@ -185,19 +185,19 @@ class MainWindow(QMainWindow):
         print(savefile_direct)
 
     def importButtonClick(self):
-        importfile_direct = self.getFileName()
-        print("import button pressed!", importfile_direct)
+        self.importfile_direct = self.getFileName()
+        print("import button pressed!", self.importfile_direct)
 
         # Check that a file has been selected and stored in tuple index 0
         # if it is empty, cancel or nothing has been selected, pass to avoid crash
-        if importfile_direct[0] == '':
+        if self.importfile_direct[0] == '':
             pass
         else:
-            self.image_data = loadFile(importfile_direct[0])
+            self.image_data = loadFile(self.importfile_direct[0])
             # Display Image
             # TODO - make this a setting in the settings menu as to the default slice to be showed
             self.DisplayImageSlice(0)
-            self.totalAxialSlice = niiloader.totalAxialSlice(importfile_direct[0])
+            self.totalAxialSlice = niiloader.totalAxialSlice(self.importfile_direct[0])
             self.right_tool_bar()
 
     def DisplayImageSlice(self, i):
@@ -276,8 +276,11 @@ class MainWindow(QMainWindow):
         print("mouse double clicked")
 
     def slider_value_change(self, i):
+        print("slider value changed" + str(self.settings_window_been_open))
+        if self.settings_window_been_open:
+            self.settings_window_closed()
+            self.settings_window_been_open = False
         self.DisplayImageSlice(i)
-        print(i)
 
     @staticmethod
     def undo():
@@ -317,7 +320,23 @@ class MainWindow(QMainWindow):
     def settingsClick(self):
         self.settings_window = SettingsWindow()
         self.settings_window.show()
+#         on window close run a function...
+        self.settings_window_been_open = True
 
+    def settings_window_closed(self):
+        print("settings window closed")
+        # reload the image to apply the settings
+        if self.totalAxialSlice == 0:
+            print("no image open")
+            pass
+        else:
+            print("image open")
+            self.createImageDisplay()
+            self.comment_box()
+            self.Stat_Panel()
+            self.resize(1000, 1000)
+            # Display Image
+            # self.DisplayImageSlice(0)
 
 # File handling was heavily inspired by the following source:
 # https://learndataanalysis.org/source-code-how-to-use-qfiledialog-to-select-files-in-pyqt6/ icon attribution: <a
