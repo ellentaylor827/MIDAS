@@ -334,7 +334,7 @@ class MainWindow(QMainWindow):
             self.createImageDisplay()
             self.comment_box()
             self.Stat_Panel()
-            self.resize(1000, 1000)
+            self.resize(1281, 721)
             # Display Image
             # self.DisplayImageSlice(0)
 
