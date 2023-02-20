@@ -198,6 +198,7 @@ class MainWindow(QMainWindow):
             self.right_tool_bar()
             self.comment_box()
             self.Stat_Panel()
+            self.resize(1285, 725)
 
     def DisplayImageSlice(self, i):
         self.imageDisp.displayImage(self.image_data[:, :, i])
