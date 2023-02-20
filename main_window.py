@@ -39,6 +39,7 @@ class MainWindow(QMainWindow):
         self.text_edit = None
         self.textbox = QTextEdit()
         self.imageDisp = None
+        self.Panel = QTextEdit()
         self.slider_widget = QSlider()
         self.edit_icon = QAction(QIcon(os.path.join(basedir, "iconFiles", "editIcon.png")), "Draw", self)
         self.edit_icon.triggered.connect(self.edit_button_click)
@@ -80,8 +81,6 @@ class MainWindow(QMainWindow):
         # Call createImageDisplay to create Widget with QVboxLayout which has the navigationToolBar and
         # ImageDisplay widgets.
         self.createImageDisplay()
-
-        self.Stat_Panel()
 
     # Function - self - create a right toolbar and call the slider function to add a function to this
     def right_tool_bar(self):
@@ -198,6 +197,7 @@ class MainWindow(QMainWindow):
             self.totalAxialSlice = niiloader.totalAxialSlice(self.importfile_direct[0])
             self.right_tool_bar()
             self.comment_box()
+            self.Stat_Panel()
 
     def DisplayImageSlice(self, i):
         self.imageDisp.displayImage(self.image_data[:, :, i])
@@ -342,13 +342,6 @@ class MainWindow(QMainWindow):
             self.layout.removeWidget(self.imageDisp)
             self.imageDisp = ImageDisplay(self, width=20, height=20, dpi=300)
             self.layout.addWidget(self.imageDisp)
-            # self.textBoxHideButton()
-            # self.createImageDisplay()
-            # self.textBoxHideButton()
-            # self.Stat_Panel()
-            # self.resize(1281, 721)
-            # Display Image
-            # self.DisplayImageSlice(0)
 
 
 # File handling was heavily inspired by the following source:
