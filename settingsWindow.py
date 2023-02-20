@@ -1,7 +1,7 @@
 # Creating a pyqt6 window that will hold settings for the application
 
 from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QFormLayout, QVBoxLayout, QWidget, \
-    QGridLayout, QComboBox
+    QGridLayout, QComboBox, QSpinBox
 from PyQt6.QtCore import (Qt, QCoreApplication, QSettings, QTranslator, QLocale, QLibraryInfo)
 from PyQt6.QtGui import (QIcon, QPalette, QColor)
 import sys
@@ -24,7 +24,7 @@ class SettingsWindow(QWidget):
         # Setting default values
         self.settings_file = None
         self.colourmap = None
-        self.setting2 = None
+        self.default_slice_number = None
         self.noFile = False
 
         # import settings from settings.json
@@ -32,7 +32,8 @@ class SettingsWindow(QWidget):
 
         # set window layout and widgets
         self.layout = QFormLayout()
-        self.layout.setContentsMargins(1, 0, 0, 0)
+        self.layout.setContentsMargins(0, 0, 0, 0)
+
         self.layout.setSpacing(20)
         self.setLayout(self.layout)
 
@@ -57,6 +58,15 @@ class SettingsWindow(QWidget):
         # align label to the right
         self.layout.addRow(label, self.combobox)
 
+        label_slice_number = QLabel("Default Slice:")
+        self.spinner = QSpinBox()
+        # this is not allowing for more than this number of slices to be displayed
+        self.spinner.setRange(0, 50)
+        # self.spinner.
+        self.layout.addRow(label_slice_number, self.spinner)
+        self.spinner.setValue(self.default_slice_number)
+        self.spinner.valueChanged.connect(self.spinnerChanged)
+
         # save button
         self.save_button = QPushButton("Save")
         self.save_button.clicked.connect(self.saveSettings)
@@ -70,6 +80,9 @@ class SettingsWindow(QWidget):
 
         # show window
         self.show()
+
+    def spinnerChanged(self):
+        self.default_slice_number = self.spinner.value()
 
     def comboboxChanged(self):
         self.colourmap = self.combobox.currentText()
@@ -85,8 +98,8 @@ class SettingsWindow(QWidget):
                 if key == "colourmap":
                     self.colourmap = value
                     colourmap_outside_class = self.colourmap
-                elif key == "setting2":
-                    self.setting2 = value
+                elif key == "default_slice_number":
+                    self.default_slice_number = value
                 elif key == "setting3":
                     pass
                 elif key == "setting4":
@@ -108,7 +121,7 @@ class SettingsWindow(QWidget):
         # save settings to settings.json
         self.settings_file["colourmap"] = self.colourmap
         colourmap_outside_class = self.colourmap
-        self.settings_file["setting2"] = self.setting2
+        self.settings_file["default_slice_number"] = self.default_slice_number
         self.settings_file["setting3"] = "test"
         self.settings_file["setting4"] = "test"
         json_file = open("settings.json", "w")

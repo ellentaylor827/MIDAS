@@ -40,6 +40,7 @@ class MainWindow(QMainWindow):
         self.textbox = QTextEdit()
         self.imageDisp = None
         self.Panel = QTextEdit()
+        self.default_slice_number = 0
         self.slider_widget = QSlider()
         self.edit_icon = QAction(QIcon(os.path.join(basedir, "iconFiles", "editIcon.png")), "Draw", self)
         self.edit_icon.triggered.connect(self.edit_button_click)
@@ -182,6 +183,8 @@ class MainWindow(QMainWindow):
         print(savefile_direct)
 
     def importButtonClick(self):
+        settings = SettingsWindow()
+        default_slice = settings.default_slice_number
         self.importfile_direct = self.getFileName()
         print("import button pressed!", self.importfile_direct)
 
@@ -192,14 +195,14 @@ class MainWindow(QMainWindow):
         else:
             self.image_data = loadFile(self.importfile_direct[0])
             # Display Image
-            # TODO - make this a setting in the settings menu as to the default slice to be showed
-            self.DisplayImageSlice(0)
+            self.DisplayImageSlice(default_slice)
             self.totalAxialSlice = niiloader.totalAxialSlice(self.importfile_direct[0])
             self.right_tool_bar()
             self.comment_box()
             self.Stat_Panel()
             # hack - this is a hack to get the comment and stat panel to show up correctly
             self.resize(1285, 725)
+            self.slider_widget.setValue(default_slice)
 
     def DisplayImageSlice(self, i):
         self.imageDisp.displayImage(self.image_data[:, :, i])
@@ -215,11 +218,6 @@ class MainWindow(QMainWindow):
         widget = QWidget()
         widget.setLayout(self.layout)
         self.setCentralWidget(widget)
-
-    @staticmethod
-    def color_map_setting():
-        # TODO - hold all of the color map as a dropdown maybe? Or just hold the data
-        pass
 
     @staticmethod
     def edit_button_click():
@@ -246,14 +244,13 @@ class MainWindow(QMainWindow):
         else:
             self.textbox.setText(loadText(self.importfile_direct[0]))
         # print textbox data
-        self.textbox.textChanged.connect(self.onChanged)
+        self.textbox.textChanged.connect(self.on_text_box_change)
         self.textbox.move(1050, 7)
         self.textbox.setUndoRedoEnabled(True)
         layout.addWidget(self.textbox)
 
-    def onChanged(self):
+    def on_text_box_change(self):
         niiloader.saveText(self.importfile_direct[0], self.textbox.toPlainText())
-        # TODO - make this save to the header of the file (could be slow though)
         print(self.textbox.toPlainText())
 
     def textBoxHideButton(self):
