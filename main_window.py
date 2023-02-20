@@ -198,6 +198,7 @@ class MainWindow(QMainWindow):
             self.right_tool_bar()
             self.comment_box()
             self.Stat_Panel()
+            # hack - this is a hack to get the comment and stat panel to show up correctly
             self.resize(1285, 725)
 
     def DisplayImageSlice(self, i):
