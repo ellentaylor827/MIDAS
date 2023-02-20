@@ -1,12 +1,13 @@
 import os
 import PyQt6
 from PyQt6.QtCore import QSize, Qt, QRect
-from PyQt6.QtGui import QAction, QIcon
+from PyQt6.QtGui import QAction, QIcon, QTextCursor
 from PyQt6.QtWidgets import (
     QMainWindow,
     QSlider,
     QMenu,
-    QToolBar, QStatusBar, QFileDialog, QWidget, QHBoxLayout, QTextEdit, QVBoxLayout, QLineEdit, QLabel, QPushButton
+    QToolBar, QStatusBar, QFileDialog, QWidget, QHBoxLayout, QTextEdit, QVBoxLayout, QLineEdit, QLabel, QPushButton,
+    QMessageBox
 )
 
 import niiloader
@@ -79,7 +80,30 @@ class MainWindow(QMainWindow):
         self.comment_box()
 
         self.Stat_Panel()
+        self.initUI()
 
+    def initUI(self):
+        # Add your widgets and layouts here
+
+        # Connect the closeEvent signal to the closeEvent handler
+        self.closeEvent = self.closeEventHandler
+
+    def closeEventHandler(self, event):
+        # Show a message box to confirm exit
+        reply = QMessageBox.question(
+            self, "Confirm Exit",
+            "Are you sure you want to exit without saving?",
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No
+        )
+
+        # If the user confirms exit, accept the close event and exit
+        if reply == QMessageBox.StandardButton.Yes:
+            event.accept()
+        # If the user cancels exit, ignore the close event
+        else:
+            self.saveButtonClick()
+            event.ignore()
     # Function - self - create a right toolbar and call the slider function to add a function to this
     def right_tool_bar(self):
         self.right_toolbar.setIconSize(QSize(24, 24))
@@ -177,6 +201,8 @@ class MainWindow(QMainWindow):
         # returns: ('/Users/alexanderelwell/Documents/GtiHub/MIDAS/Data File.nii',
         # 'NIFTI Images (*.nii *.nii.gz *.hdr)')
         print(savefile_direct)
+        
+
 
     def importButtonClick(self):
         importfile_direct = self.getFileName()
@@ -238,7 +264,16 @@ class MainWindow(QMainWindow):
         self.textbox.setPlaceholderText("Enter some text")
         self.textbox.move(1050, 7)
         self.textbox.setUndoRedoEnabled(True)
+        self.textbox.textChanged.connect(self.limit_text)
         layout.addWidget(self.textbox)
+    def limit_text(self):
+        text = self.textbox.toPlainText()
+        words = text.split()
+        if len(words) > 80:
+            self.textbox.setPlainText(" ".join(words[:80]))
+            self.textbox.setReadOnly(True)
+        else:
+            self.textbox.setReadOnly(False)
 
     def textBoxHideButton(self):
         if self.textbox.isHidden():
@@ -251,12 +286,12 @@ class MainWindow(QMainWindow):
     def resizeEvent(self, event):
         # Comment Box
         self.textbox.resize(int(event.size().width() / 5), int(event.size().height() / 5))
-        x = event.size().width() - self.textbox.geometry().width() - 32
-        self.textbox.move(x, 65)
+        x = event.size().width() - self.textbox.geometry().width() - 13
+        self.textbox.move(x, 11)
 
         # Stat Panel
         self.Panel.resize(int(event.size().width() / 5), int(event.size().height() / 6.5))
-        x = event.size().width() - self.Panel.geometry().width() - 32
+        x = event.size().width() - self.Panel.geometry().width() - 13
         y = self.textbox.geometry().y() + self.textbox.geometry().height()
         self.Panel.move(x, y)
 
