@@ -206,12 +206,12 @@ class MainWindow(QMainWindow):
     # Set the width height and resolution Then add the Navigationtoolbar and ImageDisplay Widgets to the layout.
     # Create a new widget and set its layout to the layout we created.
     def createImageDisplay(self):
-        layout = QtWidgets.QVBoxLayout()
+        self.layout = QtWidgets.QVBoxLayout()
         self.imageDisp = ImageDisplay(self, width=20, height=20, dpi=300)
         # layout.addWidget(NavigationToolbar(self.imageDisp))
-        layout.addWidget(self.imageDisp)
+        self.layout.addWidget(self.imageDisp)
         widget = QWidget()
-        widget.setLayout(layout)
+        widget.setLayout(self.layout)
         self.setCentralWidget(widget)
 
     @staticmethod
@@ -253,7 +253,6 @@ class MainWindow(QMainWindow):
         niiloader.saveText(self.importfile_direct[0], self.textbox.toPlainText())
         # TODO - make this save to the header of the file (could be slow though)
         print(self.textbox.toPlainText())
-
 
     def textBoxHideButton(self):
         if self.textbox.isHidden():
@@ -330,27 +329,27 @@ class MainWindow(QMainWindow):
     def settingsClick(self):
         self.settings_window = SettingsWindow()
         self.settings_window.show()
-#         on window close run a function...
+        #         on window close run a function...
         self.settings_window_been_open = True
 
     def settings_window_closed(self):
-        print("settings window closed")
         # reload the image to apply the settings
         if self.totalAxialSlice == 0:
             print("no image open")
             pass
         else:
             print("image open")
-            self.createImageDisplay()
-            self.comment_box()
-            self.Stat_Panel()
-            self.resize(1281, 721)
+            self.layout.removeWidget(self.imageDisp)
+            self.imageDisp = ImageDisplay(self, width=20, height=20, dpi=300)
+            self.layout.addWidget(self.imageDisp)
+            # self.textBoxHideButton()
+            # self.createImageDisplay()
+            # self.textBoxHideButton()
+            # self.Stat_Panel()
+            # self.resize(1281, 721)
             # Display Image
             # self.DisplayImageSlice(0)
 
-
-    def return_comment_box_data(self):
-        self.textbox
 
 # File handling was heavily inspired by the following source:
 # https://learndataanalysis.org/source-code-how-to-use-qfiledialog-to-select-files-in-pyqt6/ icon attribution: <a
