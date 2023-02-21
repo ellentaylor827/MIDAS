@@ -16,6 +16,10 @@ class ImageDisplay(FigureCanvasQTAgg):
     def __init__(self, parent=None, width=5, height=4, dpi=100,):
         # Create the Figure
         self.fig = Figure(figsize=(width, height), dpi=dpi)
+
+        # connect button press event to the figure canvas
+        # this button_press_event can be changed to call any self.function we want to be called
+        self.fig.canvas.mpl_connect('button_press_event', self.mouse_event)
         #self.fig.clear()
 
         # Create the Axes and then Hide them.
@@ -27,12 +31,18 @@ class ImageDisplay(FigureCanvasQTAgg):
         plt.draw()
         super(ImageDisplay, self).__init__(self.fig)
 
+
+
     # displayImage method takes a slice (image) and renders this to the ImageDisplay Class.
     def displayImage(self, slice):
         self.axes.clear()
         self.axes.axis('off')
         self.axes.imshow(slice)
         self.draw()
+
+    # This function is just displaying a print statement to display the x and y being called on the button_press_event
+    def mouse_event(self, event):
+        print('x: {} and y: {}'.format(event.xdata, event.ydata))
 
     def click_event(self, e):
         print("click")
