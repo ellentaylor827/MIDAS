@@ -77,8 +77,8 @@ class MainWindow(QMainWindow):
         # ImageDisplay widgets.
         self.createImageDisplay()
 
-        self.toolbar = NavigationToolbar(self.imageDisp, self)
-        self.toolbar.hide()
+        #self.toolbar = NavigationToolbar(self.imageDisp, self)
+        #self.toolbar.hide()
 
         self.comment_box()
         self.Stat_Panel()
@@ -223,10 +223,9 @@ class MainWindow(QMainWindow):
         # make sure that this will first disable the edit button
         print("hand button clicked!")
         # TODO - make sure that this will first disable the drawing button
-        # NavigationToolbar(self.imageDisp).pan()
+        self.imageDisp._toolbar.pan()
 
-        self.toolbar.pan()
-        print(self.imageDisp.toolbar.mode)
+
 
     # this can be paired with the left click to get the location to pan the item to!
     def mouseMoveEvent(self, e):

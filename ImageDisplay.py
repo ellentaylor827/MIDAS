@@ -5,6 +5,7 @@ import matplotlib
 matplotlib.use('Qt5Agg')
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
+from matplotlib.backends.backend_qtagg import NavigationToolbar2QT as NavigationToolbar
 
 # ImageDisplay inherits from FigureCanvasQTAgg.
 # #matplotlib FigureCanvasQTAgg allows us to have a figure to render an image to.
@@ -14,30 +15,40 @@ from matplotlib.figure import Figure
 
 class ImageDisplay(FigureCanvasQTAgg):
     def __init__(self, parent=None, width=5, height=4, dpi=100,):
+
+        # These are the three private member variables being created within the constructor.
+        # These are all set to private as access from outside should not be required.
+        self._fig = None
+        self._axes = None
+        self._toolbar = None
+
         # Create the Figure
-        self.fig = Figure(figsize=(width, height), dpi=dpi)
+        self._fig = Figure(figsize=(width, height), dpi=dpi)
+        # self.fig.clear()
 
         # connect button press event to the figure canvas
         # this button_press_event can be changed to call any self.function we want to be called
-        self.fig.canvas.mpl_connect('button_press_event', self.mouse_event)
-        #self.fig.clear()
+        self._fig.canvas.mpl_connect('button_press_event', self.mouse_event)
 
-        # Create the Axes and then Hide them.
-        self.axes = self.fig.add_subplot(111)
+        # Create the Axes and then Hide them
+        self._axes = self._fig.add_subplot(111)
         #self.axes.clear()
-        self.axes.axis('off')
+        self._axes.axis('off')
 
         # Draw the plot.
         plt.draw()
-        super(ImageDisplay, self).__init__(self.fig)
+        super(ImageDisplay, self).__init__(self._fig)
 
+        # Create toolbar and attach it to the ImageDisplay and then Hide the toolbar.
+        self._toolbar = NavigationToolbar(self, self)
+        self._toolbar.hide()
 
 
     # displayImage method takes a slice (image) and renders this to the ImageDisplay Class.
     def displayImage(self, slice):
-        self.axes.clear()
-        self.axes.axis('off')
-        self.axes.imshow(slice)
+        self._axes.clear()
+        self._axes.axis('off')
+        self._axes.imshow(slice)
         self.draw()
 
     # This function is just displaying a print statement to display the x and y being called on the button_press_event
