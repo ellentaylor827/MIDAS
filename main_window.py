@@ -214,16 +214,16 @@ class MainWindow(QMainWindow):
         # TODO - hold all of the color map as a dropdown maybe? Or just hold the data
         pass
 
-    @staticmethod
-    def edit_button_click():
+    def edit_button_click(self):
         # make sure that this will first disable the pan/hand button
         print("Edit button pressed!")
+        self.imageDisp.edit()
 
     def hand_button_click(self):
         # make sure that this will first disable the edit button
         print("hand button clicked!")
         # TODO - make sure that this will first disable the drawing button
-        self.imageDisp._toolbar.pan()
+        self.imageDisp.panZoom()
 
 
 
