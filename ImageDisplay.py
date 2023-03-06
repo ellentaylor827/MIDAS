@@ -32,7 +32,7 @@ class ImageDisplay(FigureCanvasQTAgg):
 
         # connect button press event to the figure canvas
         # this button_press_event can be changed to call any self.function we want to be called
-        self._fig.canvas.mpl_connect('button_press_event', self.mouse_event)
+        self._fig.canvas.mpl_connect('button_press_event', self.mouseEvent)
 
         # Create the Axes and then Hide them
         self._axes = self._fig.add_subplot(111)
@@ -59,23 +59,36 @@ class ImageDisplay(FigureCanvasQTAgg):
     def panZoom(self):
         self._toolbar.pan()
 
-        # If statement used to keep track of the current state of pan/zoom.
-        # This will ensure when edit button is clicked, we can disable pan if it is set true.
+        # If edit is set to true, call edit to set it to false.
+        if self._toolbarSelection["edit"]:
+            self.edit()
+
+        # If "pan/zoom" = false, set it to true, else set it to false
         if not self._toolbarSelection["pan/zoom"]:
             self._toolbarSelection["pan/zoom"] = True
         else:
             self._toolbarSelection["pan/zoom"] = False
 
-
     def edit(self):
-        # If pan is currently set to true within _toolbarSelection, disable it.
+
+        # If "pan/zoom" is true, call panZoom which will call pan function and set "pan/zoom" to false.
         if self._toolbarSelection["pan/zoom"]:
             self.panZoom()
 
+        # if "edit" = false, set it to true, else set it to false.
+        if not self._toolbarSelection["edit"]:
+            self._toolbarSelection["edit"] = True
+        else:
+            self._toolbarSelection["edit"] = False
+
+
+
 
     # This function is just displaying a print statement to display the x and y being called on the button_press_event
-    def mouse_event(self, event):
-        print('x: {} and y: {}'.format(event.xdata, event.ydata))
+    def mouseEvent(self, event):
+        # If edit is true, carry out the print x,y statement (or any other functionality when edit is on!)
+        if self._toolbarSelection["edit"]:
+            print('x: {} and y: {}'.format(event.xdata, event.ydata))
 
 
 
