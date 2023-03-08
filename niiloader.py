@@ -15,6 +15,12 @@ def loadHeader(filename):
     print(nifty.header)
     return nifty
 
+
+def loadText(filename):
+    nifty = nib.load(filename)
+    return str(nifty.header['descrip'])
+
+
 def totalAxialSlice(filename):
     nifty = nib.load(filename)
     max = nifty.header['dim'][3]

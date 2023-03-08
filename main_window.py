@@ -13,6 +13,7 @@ from PyQt6.QtWidgets import (
 import niiloader
 from niiloader import *
 from ImageDisplay import *
+from settingsWindow import *
 from matplotlib.backends.qt_compat import QtWidgets
 from matplotlib.backends.backend_qtagg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.backend_bases import NavigationToolbar2 as backendNavToolbar
@@ -32,11 +33,15 @@ class MainWindow(QMainWindow):
         # Calling the constructor of the parent class.
         super().__init__()
 
+        self.settings_window_been_open = False
+        self.settings_window = None  # No external window yet.
         # Setting buttons, icons and triggers on press for all buttons used.
         self.Panel = None
         self.text_edit = None
-        self.textbox = None
+        self.textbox = QTextEdit()
         self.imageDisp = None
+        self.Panel = QTextEdit()
+        self.default_slice_number = 0
         self.slider_widget = QSlider()
         self.edit_icon = QAction(QIcon(os.path.join(basedir, "iconFiles", "editIcon.png")), "Draw", self)
         self.edit_icon.triggered.connect(self.edit_button_click)
@@ -52,6 +57,8 @@ class MainWindow(QMainWindow):
         self.import_icon.triggered.connect(self.importButtonClick)
         self.comment_icon = QAction(QIcon(os.path.join(basedir, "iconFiles", "folder.png")), "Comment Box/Panel", self)
         self.comment_icon.triggered.connect(self.textBoxHideButton)
+        self.settings_icon = QAction(QIcon(os.path.join(basedir, "iconFiles", "setting.png")), "Settings", self)
+        self.settings_icon.triggered.connect(self.settingsClick)
 
         # status tip
         self.status_tip()
@@ -138,7 +145,7 @@ class MainWindow(QMainWindow):
     def slider(self, minimum=0):
         # Creating a slider widget, it is then set to have a range of 1 to 200. This is now set to the central widget
         # for testing but will be moved into a toolbar on the right in the future
-        self.slider_widget.setRange(minimum, self.totalAxialSlice-1)
+        self.slider_widget.setRange(minimum, self.totalAxialSlice - 1)
         self.slider_widget.setSingleStep(1)
         # this thing here occurs on click and scroll - use this one for everything.
         self.slider_widget.valueChanged.connect(self.slider_value_change)
@@ -153,6 +160,7 @@ class MainWindow(QMainWindow):
         edit_menu = menu.addMenu("&Edit")
         file_menu.addAction(self.save_icon)
         file_menu.addAction(self.import_icon)
+        file_menu.addAction(self.settings_icon)
         edit_menu.addAction(self.undo_icon)
         edit_menu.addAction(self.redo_icon)
         edit_menu.addAction(self.edit_icon)
@@ -205,41 +213,41 @@ class MainWindow(QMainWindow):
 
 
     def importButtonClick(self):
-        importfile_direct = self.getFileName()
-        print("import button pressed!", importfile_direct)
+        settings = SettingsWindow()
+        default_slice = settings.default_slice_number
+        self.importfile_direct = self.getFileName()
+        print("import button pressed!", self.importfile_direct)
 
         # Check that a file has been selected and stored in tuple index 0
         # if it is empty, cancel or nothing has been selected, pass to avoid crash
-        if importfile_direct[0] == '':
+        if self.importfile_direct[0] == "":
             pass
         else:
-            self.image_data = loadFile(importfile_direct[0])
+            self.image_data = loadFile(self.importfile_direct[0])
             # Display Image
-            # TODO - make this a setting in the settings menu as to the default slice to be showed
-            self.DisplayImageSlice(0)
-            self.totalAxialSlice = niiloader.totalAxialSlice(importfile_direct[0])
+            self.DisplayImageSlice(default_slice)
+            self.totalAxialSlice = niiloader.totalAxialSlice(self.importfile_direct[0])
             self.right_tool_bar()
+            self.comment_box()
+            self.Stat_Panel()
+            # hack - this is a hack to get the comment and stat panel to show up correctly
+            self.resize(1285, 725)
+            self.slider_widget.setValue(default_slice)
 
     def DisplayImageSlice(self, i):
         self.imageDisp.displayImage(self.image_data[:, :, i])
-
 
     # createImageDisplay method creates a QVboxlayout, Then Creates instance of ImageDisplay class.
     # Set the width height and resolution Then add the Navigationtoolbar and ImageDisplay Widgets to the layout.
     # Create a new widget and set its layout to the layout we created.
     def createImageDisplay(self):
-        layout = QtWidgets.QVBoxLayout()
+        self.layout = QtWidgets.QVBoxLayout()
         self.imageDisp = ImageDisplay(self, width=20, height=20, dpi=300)
         # layout.addWidget(NavigationToolbar(self.imageDisp))
-        layout.addWidget(self.imageDisp)
+        self.layout.addWidget(self.imageDisp)
         widget = QWidget()
-        widget.setLayout(layout)
+        widget.setLayout(self.layout)
         self.setCentralWidget(widget)
-
-    @staticmethod
-    def color_map_setting():
-        # TODO - hold all of the color map as a dropdown maybe? Or just hold the data
-        pass
 
     @staticmethod
     def edit_button_click():
@@ -261,7 +269,12 @@ class MainWindow(QMainWindow):
         layout = QVBoxLayout()
         # self.setLayout(layout)
         self.textbox = QTextEdit(self)
-        self.textbox.setPlaceholderText("Enter some text")
+        if not self.importfile_direct:
+            self.textbox.setPlaceholderText("Enter text here")
+        else:
+            self.textbox.setText(loadText(self.importfile_direct[0]))
+        # print textbox data
+        self.textbox.textChanged.connect(self.on_text_box_change)
         self.textbox.move(1050, 7)
         self.textbox.setUndoRedoEnabled(True)
         self.textbox.textChanged.connect(self.limit_text)
@@ -274,6 +287,10 @@ class MainWindow(QMainWindow):
             self.textbox.setReadOnly(True)
         else:
             self.textbox.setReadOnly(False)
+
+    def on_text_box_change(self):
+        niiloader.saveText(self.importfile_direct[0], self.textbox.toPlainText())
+        print(self.textbox.toPlainText())
 
     def textBoxHideButton(self):
         if self.textbox.isHidden():
@@ -306,8 +323,11 @@ class MainWindow(QMainWindow):
         print("mouse double clicked")
 
     def slider_value_change(self, i):
+        print("slider value changed" + str(self.settings_window_been_open))
+        if self.settings_window_been_open:
+            self.settings_window_closed()
+            self.settings_window_been_open = False
         self.DisplayImageSlice(i)
-        print(i)
 
     @staticmethod
     def undo():
@@ -341,7 +361,28 @@ class MainWindow(QMainWindow):
         self.Panel.setReadOnly(True)
         layout.addWidget(self.Panel)
 
-    # File handling was heavily inspired by the following source:
-    # https://learndataanalysis.org/source-code-how-to-use-qfiledialog-to-select-files-in-pyqt6/ icon attribution: <a
-    # href="https://www.flaticon.com/free-icons/right-arrow" title="right arrow icons">Right arrow icons created by
-    # nahumam - Flaticon</a>
+    # settings window
+    # Setting to None to prevent more than one settings window from opening at a time - prevents settings JSON being
+    # written to multiple times
+    def settingsClick(self):
+        self.settings_window = SettingsWindow()
+        self.settings_window.show()
+        #         on window close run a function...
+        self.settings_window_been_open = True
+
+    def settings_window_closed(self):
+        # reload the image to apply the settings
+        if self.totalAxialSlice == 0:
+            print("no image open")
+            pass
+        else:
+            print("image open")
+            self.layout.removeWidget(self.imageDisp)
+            self.imageDisp = ImageDisplay(self, width=20, height=20, dpi=300)
+            self.layout.addWidget(self.imageDisp)
+
+
+# File handling was heavily inspired by the following source:
+# https://learndataanalysis.org/source-code-how-to-use-qfiledialog-to-select-files-in-pyqt6/ icon attribution: <a
+# href="https://www.flaticon.com/free-icons/right-arrow" title="right arrow icons">Right arrow icons created by
+# nahumam - Flaticon</a>
