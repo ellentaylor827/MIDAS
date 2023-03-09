@@ -42,6 +42,7 @@ class MainWindow(QMainWindow):
         self.imageDisp = None
         self.Panel = QTextEdit()
         self.default_slice_number = 0
+        self.toolbar = None
         self.slider_widget = QSlider()
         self.edit_icon = QAction(QIcon(os.path.join(basedir, "iconFiles", "editIcon.png")), "Draw", self)
         self.edit_icon.triggered.connect(self.edit_button_click)
@@ -84,8 +85,10 @@ class MainWindow(QMainWindow):
         # ImageDisplay widgets.
         self.createImageDisplay()
 
-        self.comment_box()
+        #self.toolbar = NavigationToolbar(self.imageDisp, self)
+        #self.toolbar.hide()
 
+        self.comment_box()
         self.Stat_Panel()
         self.initUI()
 
@@ -250,15 +253,22 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(widget)
 
     @staticmethod
-    def edit_button_click():
+    def color_map_setting():
+        # TODO - hold all of the color map as a dropdown maybe? Or just hold the data
+        pass
+
+    def edit_button_click(self):
         # make sure that this will first disable the pan/hand button
         print("Edit button pressed!")
+        self.imageDisp.edit()
 
     def hand_button_click(self):
         # make sure that this will first disable the edit button
         print("hand button clicked!")
         # TODO - make sure that this will first disable the drawing button
-        NavigationToolbar(self.imageDisp).pan()
+        self.imageDisp.panZoom()
+
+
 
     # this can be paired with the left click to get the location to pan the item to!
     def mouseMoveEvent(self, e):
