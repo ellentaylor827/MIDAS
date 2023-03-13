@@ -11,7 +11,6 @@ def linePlot(x, y, fig):
 # used to find the gradient of the perpedicular line
 def getStats(x, y):
     # finds the gradient on the original line
-    print("hi")
     xDiff = x[1] - x[0]
     yDiff = y[1] - y[0]
     gradient = yDiff / xDiff
