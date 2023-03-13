@@ -2,6 +2,8 @@ import nibabel as nib
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
+
+import line_plot
 from settingsWindow import SettingsWindow
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
@@ -28,7 +30,8 @@ class ImageDisplay(FigureCanvasQTAgg):
         }
 
         # Create the Figure
-        self._fig = Figure(figsize=(width, height), dpi=dpi)
+        self._fig = plt.figure()
+        #self._fig = Figure(figsize=(width, height), dpi=dpi)
         # self.fig.clear()
 
         # connect button press event to the figure canvas
@@ -51,7 +54,6 @@ class ImageDisplay(FigureCanvasQTAgg):
         # Create toolbar and attach it to the ImageDisplay and then Hide the toolbar.
         self._toolbar = NavigationToolbar(self, self)
         self._toolbar.hide()
-
 
     # displayImage method takes a slice (image) and renders this to the ImageDisplay Class.
     def displayImage(self, slice):
@@ -86,41 +88,9 @@ class ImageDisplay(FigureCanvasQTAgg):
         else:
             self._toolbarSelection["edit"] = False
 
-
-
-
     # This function is just displaying a print statement to display the x and y being called on the button_press_event
     def mouseEvent(self, event):
         # If edit is true, carry out the print x,y statement (or any other functionality when edit is on!)
         if self._toolbarSelection["edit"]:
+            line_plot.click_event(event, self._fig)
             print('x: {} and y: {}'.format(event.xdata, event.ydata))
-
-
-
-    # Code below is for reference for future line_plotting
-
-    # def click_event(self, e):
-    #     print("click")
-    #     pointCoords = e.xdata, e.ydata
-    #     mouseClicks.append(pointCoords)  # adds points to array of all points
-    #     if len(mouseClicks) % 2 == 0:
-    #         # takes the last two coordinates and assigns the correct x and y values
-    #         firstPoint = mouseClicks[-2]
-    #         secondPoint = mouseClicks[-1]
-    #         x = firstPoint[0], secondPoint[0]
-    #         y = firstPoint[1], secondPoint[1]
-    #         linePlot(x, y)
-    #
-    # def getGradiant(self, x, y):
-    #     # finds the gradient on the original line
-    #     xDifference = x[1] - x[0]
-    #     yDifference = y[1] - y[0]
-    #     gradient = yDifference / xDifference
-    #     # finds perpedicular bisector gradient
-    #     bisectorGradient = -xDifference / yDifference
-    #
-    # def linePlot(self, x, y):
-    #     # plots and draws the line
-    #     plt.plot(x, y, marker='.', color="Yellow")
-    #     fig.canvas.draw()
-    #     getGradiant(x, y)
