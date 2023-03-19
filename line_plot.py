@@ -1,27 +1,28 @@
 import nibabel as nib
 import numpy as np
 import matplotlib.pyplot as plt
+import math
 
-
-def linePlot(x, y):
+def linePlot(x, y, fig):
     # plots and draws the line
-    plt.plot(x, y, marker='.', color="Yellow")
+    lineTemp = plt.plot(x, y, marker='.', color="Yellow")
+    #adds the drawn line to an array
+    lineList.append(lineTemp)
     fig.canvas.draw()
-    getGradiant(x, y)
-
 
 # used to find the gradient of the perpedicular line
-def getGradiant(x, y):
+def getStats(x, y):
     # finds the gradient on the original line
-    xDifference = x[1] - x[0]
-    yDifference = y[1] - y[0]
-    gradient = yDifference / xDifference
+    xDiff = x[1] - x[0]
+    yDiff = y[1] - y[0]
+    gradient = yDiff / xDiff
     # finds perpedicular bisector gradient
-    bisectorGradient = -xDifference / yDifference
-
+    bisectorGradient = -xDiff / yDiff
+    length = math.sqrt((xDiff*xDiff) + (yDiff * yDiff))
+    return (x, y, length)
 
 # checks for mouse click
-def click_event(e):
+def click_event(e, fig):
     pointCoords = e.xdata, e.ydata
     mouseClicks.append(pointCoords)  # adds points to array of all points
     if len(mouseClicks) % 2 == 0:
@@ -30,10 +31,36 @@ def click_event(e):
         secondPoint = mouseClicks[-1]
         x = firstPoint[0], secondPoint[0]
         y = firstPoint[1], secondPoint[1]
-        linePlot(x, y)
+        linePlot(x, y, fig)
+
+# calculates the closest line to the mouse position
+def selectLine(e):
+    pointCoords = e.xdata, e.ydata
+    # calculates the closest x and y coordinate to the mouse location
+    closestX = min(range(len(mouseClicks)), key=lambda x: abs(pointCoords[0] - mouseClicks[x][0]))
+    closestY = min(range(len(mouseClicks)), key=lambda x: abs(pointCoords[1] - mouseClicks[x][1]))
+    # calculates whether the x or y distance is closer and uses it to select the closest line
+    if closestX >= closestY:
+        close = mouseClicks[closestX]
+        for i in range(len(lineList)):
+            if close in lineList[i][0].get_xdata():
+                currentlySelected = lineList[i][0]
+                break
+    else:
+        close = mouseClicks[closestY]
+        for i in range(len(lineList)):
+            if close in lineList[i][0].get_ydata():
+                currentlySelected = lineList[i][0]
+                break
 
 
-# create a mouse click event
-fig = plt.figure()
-fig.canvas.mpl_connect('button_press_event', click_event)  # creates the click event
-mouseClicks = []  # stores all line point positions
+# deletes a selected line
+def delete_line(e):
+    #removes the selected line and updates the plot
+    line = lineList[0].pop(0)
+    line.remove()
+    plt.show()
+
+lineList = []
+mouseClicks = [] # stores all line point positions
+currentlySelected = " "
