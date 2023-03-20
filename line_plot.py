@@ -8,6 +8,7 @@ def linePlot(x, y, fig):
     lineTemp = plt.plot(x, y, marker='.', color="Yellow")
     #adds the drawn line to an array
     lineList.append(lineTemp)
+    print(lineTemp[0].get_data())
     fig.canvas.draw()
 
 # used to find the gradient of the perpedicular line
@@ -36,6 +37,29 @@ def click_event(e, fig):
 # calculates the closest line to the mouse position
 def selectLine(e):
     pointCoords = e.xdata, e.ydata
+    shortestDist = []
+    for x in range(len(mouseClicks)):
+        xdist = abs(pointCoords[0] - mouseClicks[x][0])
+        ydist = abs(pointCoords[1] - mouseClicks[x][1])
+        hyp = math.hypot(xdist, ydist)
+
+        if len(shortestDist) == 0:
+            shortestDist.append(x)
+            shortestDist.append(hyp)
+        elif shortestDist[1] > hyp:
+            shortestDist[0] = x
+            shortestDist[1] = hyp
+
+    closeX = mouseClicks[shortestDist[0]][0]
+    closeY = mouseClicks[shortestDist[0]][1]
+    for i in range(len(lineList)):
+        if closeX in lineList[i][0].get_xdata() and closeY in lineList[i][0].get_ydata():
+            currentlySelected.append(lineList[i][0])
+            break
+    #currentlySelected.append(lineList[shortestDist[0]][0])
+
+
+    '''
     # calculates the closest x and y coordinate to the mouse location
     closestX = min(range(len(mouseClicks)), key=lambda x: abs(pointCoords[0] - mouseClicks[x][0]))
     closestY = min(range(len(mouseClicks)), key=lambda x: abs(pointCoords[1] - mouseClicks[x][1]))
@@ -54,6 +78,7 @@ def selectLine(e):
                 currentlySelected.append(lineList[i][0])
                 break
 
+'''
     # re-colour an already selected line and change colour of newly selected line
     if len(currentlySelected) == 0:
         pass
