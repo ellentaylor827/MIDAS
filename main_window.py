@@ -317,8 +317,8 @@ class MainWindow(QMainWindow):
         self.textbox.move(x, 11)
 
         # Stat Panel
-        self.Panel.resize(int(event.size().width() / 5), int(event.size().height() / 6.5))
-        x = event.size().width() - self.Panel.geometry().width() - 13
+        self.Panel.resize(int(event.size().width() / 5), int(event.size().height() / 5.6))
+        x = event.size().width() - self.Panel.geometry().width() - 11
         y = self.textbox.geometry().y() + self.textbox.geometry().height()
         self.Panel.move(x, y)
 
@@ -338,6 +338,9 @@ class MainWindow(QMainWindow):
             self.settings_window_closed()
             self.settings_window_been_open = False
         self.DisplayImageSlice(i)
+        print(i)
+        # update the slider number in the Stat Panel
+        self.Panel.setText(f"Diameter: \n\nX-Coordinates:  \n\nY-Coordinates: \n\nSlice: {i}")
 
     @staticmethod
     def undo():
@@ -367,7 +370,7 @@ class MainWindow(QMainWindow):
         layout = QVBoxLayout()
         self.Panel = QTextEdit(self)
         # this is how you would add the values text_box.setText(f"The value is {value}")
-        self.Panel.setText("Diameter: \n\nX-Coordinates:  \n\nY-Coordinates: ")
+        self.Panel.setText("Diameter: \n\nX-Coordinates:  \n\nY-Coordinates: \n\nSlice:")
         self.Panel.setReadOnly(True)
         layout.addWidget(self.Panel)
 
