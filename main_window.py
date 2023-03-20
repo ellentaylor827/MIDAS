@@ -56,10 +56,18 @@ class MainWindow(QMainWindow):
         self.save_icon.triggered.connect(self.saveButtonClick)
         self.import_icon = QAction(QIcon(os.path.join(basedir, "iconFiles", "folder.png")), "Import", self)
         self.import_icon.triggered.connect(self.importButtonClick)
-        self.comment_icon = QAction(QIcon(os.path.join(basedir, "iconFiles", "folder.png")), "Comment Box/Panel", self)
+        self.comment_icon = QAction(QIcon(os.path.join(basedir, "iconFiles", "content.png")), "Comment Box/Panel", self)
         self.comment_icon.triggered.connect(self.textBoxHideButton)
         self.settings_icon = QAction(QIcon(os.path.join(basedir, "iconFiles", "setting.png")), "Settings", self)
         self.settings_icon.triggered.connect(self.settingsClick)
+
+        # TODO - assign these to the desired functions
+        self.cursor_icon = QAction(QIcon(os.path.join(basedir, "iconFiles", "cursor.png")), "Cursor", self)
+        self.cursor_icon.triggered.connect(self.cursorClick)
+        self.trash_icon = QAction(QIcon(os.path.join(basedir, "iconFiles", "trash.png")), "Remove line", self)
+        self.trash_icon.triggered.connect(self.trashClick)
+        self.trash_all = QAction(QIcon(os.path.join(basedir, "iconFiles", "trash_all.png")), "Remove all lines", self)
+        self.trash_all.triggered.connect(self.trashAllClick)
 
         # status tip
         self.status_tip()
@@ -91,6 +99,18 @@ class MainWindow(QMainWindow):
         self.comment_box()
         self.Stat_Panel()
         self.initUI()
+
+    # TODO - Temp while we assign the functions - REMOVE WHEN THE REAL FUNCTIONS HAVE BEEN ASSIGNED ABOVE
+    # possible to just map the function in the below functions if multiple lines are needed to call the assigned functions :)
+
+    def cursorClick(self):
+        print("Cursor Clicked")
+
+    def trashClick(self):
+        print("Trash Clicked")
+
+    def trashAllClick(self):
+        print("Trash All Clicked")
 
     def initUI(self):
         # Add your widgets and layouts here
@@ -140,6 +160,9 @@ class MainWindow(QMainWindow):
         # Creating the comment button
         self.left_toolbar.addAction(self.comment_icon)
 
+        self.left_toolbar.addAction(self.cursor_icon)
+        self.left_toolbar.addAction(self.trash_icon)
+
         # Ensuring that only 1 button (edit or pan) is selected at one time
         self.hand_icon.toggled.connect(self.edit_icon.setDisabled)
         self.edit_icon.toggled.connect(self.hand_icon.setDisabled)
@@ -168,6 +191,10 @@ class MainWindow(QMainWindow):
         edit_menu.addAction(self.redo_icon)
         edit_menu.addAction(self.edit_icon)
         edit_menu.addAction(self.hand_icon)
+        edit_menu.addAction(self.comment_icon)
+        edit_menu.addAction(self.cursor_icon)
+        edit_menu.addAction(self.trash_icon)
+        edit_menu.addAction(self.trash_all)
 
     # Function - self - to get a file name
     def getFileName(self):
