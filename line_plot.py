@@ -38,6 +38,7 @@ def click_event(e, fig):
 def selectLine(e):
     pointCoords = e.xdata, e.ydata
     shortestDist = []
+    #calculates the coordinate closest to the mouse position
     for x in range(len(mouseClicks)):
         xdist = abs(pointCoords[0] - mouseClicks[x][0])
         ydist = abs(pointCoords[1] - mouseClicks[x][1])
@@ -56,29 +57,7 @@ def selectLine(e):
         if closeX in lineList[i][0].get_xdata() and closeY in lineList[i][0].get_ydata():
             currentlySelected.append(lineList[i][0])
             break
-    #currentlySelected.append(lineList[shortestDist[0]][0])
 
-
-    '''
-    # calculates the closest x and y coordinate to the mouse location
-    closestX = min(range(len(mouseClicks)), key=lambda x: abs(pointCoords[0] - mouseClicks[x][0]))
-    closestY = min(range(len(mouseClicks)), key=lambda x: abs(pointCoords[1] - mouseClicks[x][1]))
-
-    # calculates whether the x or y distance is closer and uses it to select the closest line
-    if closestX >= closestY:
-        close = mouseClicks[closestX]
-        for i in range(len(lineList)):
-            if close in lineList[i][0].get_xdata():
-                currentlySelected.append(lineList[i][0])
-                break
-    else:
-        close = mouseClicks[closestY]
-        for i in range(len(lineList)):
-            if close in lineList[i][0].get_ydata():
-                currentlySelected.append(lineList[i][0])
-                break
-
-'''
     # re-colour an already selected line and change colour of newly selected line
     if len(currentlySelected) == 0:
         pass
