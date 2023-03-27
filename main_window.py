@@ -1,5 +1,6 @@
 import os
 import PyQt6
+import os.path
 from PyQt6.QtCore import QSize, Qt, QRect
 from PyQt6.QtGui import QAction, QIcon, QTextCursor
 from PyQt6.QtWidgets import (
@@ -17,6 +18,7 @@ from settingsWindow import *
 from matplotlib.backends.qt_compat import QtWidgets
 from matplotlib.backends.backend_qtagg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.backend_bases import NavigationToolbar2 as backendNavToolbar
+import nibabel as nib
 
 # Setting a base directory for when generating a pyinstaller file
 basedir = os.path.dirname(__file__)
@@ -237,6 +239,29 @@ class MainWindow(QMainWindow):
         # returns: ('/Users/alexanderelwell/Documents/GtiHub/MIDAS/Data File.nii',
         # 'NIFTI Images (*.nii *.nii.gz *.hdr)')
         print(savefile_direct)
+        # Check that a file has been selected and stored in tuple index 0
+        # if it is empty, cancel or nothing has been selected, pass to avoid crash
+        if savefile_direct[0] == "":
+            pass
+        else:
+            self.saveFile(savefile_direct[0], self.image_data)
+
+    # Save the file to the specified location
+    def saveFile(self, filename, data):
+        # TODO - add a check to see if the file already exists and if it does, ask the user if they want to overwrite it
+        if (os.path.exists(filename)):
+            print("File already exists")
+        else:
+            print("File does not exist")
+
+        # TODO - add a check to see if the file is a nifti file and if it is not, add the appropriate extension
+        if(filename.endswith('.nii') or filename.endswith('.nii.gz') or filename.endswith('.hdr')):
+            print("File is a nifti file")
+        else:
+            filename.join('.nii')
+            print("File is not a nifti file")
+        
+        # nib.save(data, filename)
 
     def importButtonClick(self):
         settings = SettingsWindow()
