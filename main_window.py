@@ -93,11 +93,11 @@ class MainWindow(QMainWindow):
         # ImageDisplay widgets.
         self.createImageDisplay()
 
-        #self.toolbar = NavigationToolbar(self.imageDisp, self)
-        #self.toolbar.hide()
+        # self.toolbar = NavigationToolbar(self.imageDisp, self)
+        # self.toolbar.hide()
 
-        self.comment_box()
-        self.Stat_Panel()
+        # self.comment_box()
+        # self.Stat_Panel()
         self.initUI()
 
     # TODO - Temp while we assign the functions - REMOVE WHEN THE REAL FUNCTIONS HAVE BEEN ASSIGNED ABOVE
@@ -134,6 +134,7 @@ class MainWindow(QMainWindow):
         else:
             self.saveButtonClick()
             event.ignore()
+
     # Function - self - create a right toolbar and call the slider function to add a function to this
     def right_tool_bar(self):
         self.right_toolbar.setIconSize(QSize(24, 24))
@@ -239,8 +240,6 @@ class MainWindow(QMainWindow):
         # returns: ('/Users/alexanderelwell/Documents/GtiHub/MIDAS/Data File.nii',
         # 'NIFTI Images (*.nii *.nii.gz *.hdr)')
         print(savefile_direct)
-        
-
 
     def importButtonClick(self):
         settings = SettingsWindow()
@@ -295,8 +294,6 @@ class MainWindow(QMainWindow):
         # TODO - make sure that this will first disable the drawing button
         self.imageDisp.panZoom()
 
-
-
     # this can be paired with the left click to get the location to pan the item to!
     def mouseMoveEvent(self, e):
         print("mouse moved", e.pos())
@@ -316,6 +313,7 @@ class MainWindow(QMainWindow):
         self.textbox.setUndoRedoEnabled(True)
         self.textbox.textChanged.connect(self.limit_text)
         layout.addWidget(self.textbox)
+
     def limit_text(self):
         text = self.textbox.toPlainText()
         words = text.split()
@@ -417,7 +415,6 @@ class MainWindow(QMainWindow):
             self.layout.removeWidget(self.imageDisp)
             self.imageDisp = ImageDisplay(self, width=20, height=20, dpi=300)
             self.layout.addWidget(self.imageDisp)
-
 
 # File handling was heavily inspired by the following source:
 # https://learndataanalysis.org/source-code-how-to-use-qfiledialog-to-select-files-in-pyqt6/ icon attribution: <a
