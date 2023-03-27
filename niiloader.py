@@ -18,7 +18,11 @@ def loadHeader(filename):
 
 def loadText(filename):
     nifty = nib.load(filename)
-    return str(nifty.header['descrip'])
+    # stripping the formatting from the descrip field
+    string_data = str(nifty.header['descrip'])
+    string_data = string_data.strip("b'")
+    string_data = string_data[:-1]
+    return string_data
 
 
 def totalAxialSlice(filename):
@@ -33,7 +37,6 @@ def saveText(filename, text):
     nifty = nib.load(filename)
     # max 80 char to be stored in 'descrip' field
     nifty.header['descrip'] = text
-    print(nifty.header['descrip'])
     nib.save(nifty, filename)
 
 

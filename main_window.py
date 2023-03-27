@@ -93,11 +93,6 @@ class MainWindow(QMainWindow):
         # ImageDisplay widgets.
         self.createImageDisplay()
 
-        # self.toolbar = NavigationToolbar(self.imageDisp, self)
-        # self.toolbar.hide()
-
-        # self.comment_box()
-        # self.Stat_Panel()
         self.initUI()
 
     # TODO - Temp while we assign the functions - REMOVE WHEN THE REAL FUNCTIONS HAVE BEEN ASSIGNED ABOVE
@@ -168,6 +163,7 @@ class MainWindow(QMainWindow):
         self.hand_icon.toggled.connect(self.edit_icon.setDisabled)
         self.edit_icon.toggled.connect(self.hand_icon.setDisabled)
         self.comment_icon.toggled.connect(self.comment_icon.setDisabled)
+        self.left_toolbar.setDisabled(True)
 
     def slider(self, minimum=0):
         # Creating a slider widget, it is then set to have a range of 1 to 200. This is now set to the central widget
@@ -257,6 +253,7 @@ class MainWindow(QMainWindow):
             self.DisplayImageSlice(default_slice)
             self.totalAxialSlice = niiloader.totalAxialSlice(self.importfile_direct[0])
             self.right_tool_bar()
+            self.left_toolbar.setEnabled(True)
             self.comment_box()
             self.Stat_Panel()
             # hack - this is a hack to get the comment and stat panel to show up correctly
