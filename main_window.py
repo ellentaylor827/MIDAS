@@ -33,6 +33,8 @@ class MainWindow(QMainWindow):
         # Calling the constructor of the parent class.
         super().__init__()
 
+        self.edit_menu = None
+        self.file_menu = None
         self.settings_window_been_open = False
         self.settings_window = None  # No external window yet.
         # Setting buttons, icons and triggers on press for all buttons used.
@@ -178,21 +180,20 @@ class MainWindow(QMainWindow):
 
     def top_main_menu(self):
         menu = self.menuBar()
-
-        file_menu = menu.addMenu("&File")
-        edit_menu = menu.addMenu("&Edit")
-        file_menu.addAction(self.save_icon)
-        file_menu.addAction(self.import_icon)
-        file_menu.addAction(self.settings_icon)
-        edit_menu.addAction(self.undo_icon)
-        edit_menu.addAction(self.redo_icon)
-        edit_menu.addAction(self.edit_icon)
-        edit_menu.addAction(self.hand_icon)
-        edit_menu.addAction(self.comment_icon)
-        edit_menu.addAction(self.cursor_icon)
-        edit_menu.addAction(self.trash_icon)
-        edit_menu.addAction(self.trash_all)
-
+        self.file_menu = menu.addMenu("&File")
+        self.edit_menu = menu.addMenu("&Edit")
+        self.file_menu.addAction(self.save_icon)
+        self.file_menu.addAction(self.import_icon)
+        self.file_menu.addAction(self.settings_icon)
+        self.edit_menu.addAction(self.undo_icon)
+        self.edit_menu.addAction(self.redo_icon)
+        self.edit_menu.addAction(self.edit_icon)
+        self.edit_menu.addAction(self.hand_icon)
+        self.edit_menu.addAction(self.cursor_icon)
+        self.edit_menu.addAction(self.trash_icon)
+        self.edit_menu.addAction(self.trash_all)
+        self.edit_menu.addAction(self.comment_icon)
+        self.edit_menu.setDisabled(True)
     # Function - self - to get a file name
     def getFileName(self):
         file_filter = 'NIFTI Images (*.nii *.nii.gz *.hdr)'
@@ -254,6 +255,7 @@ class MainWindow(QMainWindow):
             self.totalAxialSlice = niiloader.totalAxialSlice(self.importfile_direct[0])
             self.right_tool_bar()
             self.left_toolbar.setEnabled(True)
+            self.edit_menu.setEnabled(True)
             self.comment_box()
             self.Stat_Panel()
             # hack - this is a hack to get the comment and stat panel to show up correctly
