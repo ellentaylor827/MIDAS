@@ -19,6 +19,7 @@ from matplotlib.backends.qt_compat import QtWidgets
 from matplotlib.backends.backend_qtagg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.backend_bases import NavigationToolbar2 as backendNavToolbar
 import nibabel as nib
+import numpy as np
 
 # Setting a base directory for when generating a pyinstaller file
 basedir = os.path.dirname(__file__)
@@ -244,24 +245,34 @@ class MainWindow(QMainWindow):
         if savefile_direct[0] == "":
             pass
         else:
+            print(self.image_data)
             self.saveFile(savefile_direct[0], self.image_data)
 
     # Save the file to the specified location
     def saveFile(self, filename, data):
-        # TODO - add a check to see if the file already exists and if it does, ask the user if they want to overwrite it
+        # add a check to see if the file already exists and if it does, ask the user if they want to overwrite it
         if (os.path.exists(filename)):
             print("File already exists")
         else:
             print("File does not exist")
 
-        # TODO - add a check to see if the file is a nifti file and if it is not, add the appropriate extension
+        # add a check to see if the file is a nifti file and if it is not, add the appropriate extension
         if(filename.endswith('.nii') or filename.endswith('.nii.gz') or filename.endswith('.hdr')):
             print("File is a nifti file")
         else:
             filename.join('.nii')
             print("File is not a nifti file")
-        
-        # nib.save(data, filename)
+        original = niiloader.loadFullFile(self.importfile_direct[0])
+        # Create a new .nii file with the modified data
+        data[0,0,0] = float(360.0)
+        print("This is the thing ehre")
+        print(line_plot.lineList)
+        for i in range(len(line_plot.lineList)):
+            print(line_plot.lineList[i])
+        #     TODO - add the line data to the data variable 
+
+        new_img = nib.Nifti1Image(data, original.affine, original.header)
+        nib.save(new_img, filename)
 
     def importButtonClick(self):
         settings = SettingsWindow()

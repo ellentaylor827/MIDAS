@@ -6,11 +6,11 @@ import matplotlib.pyplot as plt
 # actual loading of nifty file
 def loadFile(filename):
     nifty = nib.load(filename).get_fdata()
-    loadHeader(filename)
+    # loadHeader(filename)
     return nifty
 
 
-def loadHeader(filename):
+def loadFullFile(filename):
     nifty = nib.load(filename)
     print(nifty.header)
     return nifty
