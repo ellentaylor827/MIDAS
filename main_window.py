@@ -262,17 +262,68 @@ class MainWindow(QMainWindow):
         else:
             filename.join('.nii')
             print("File is not a nifti file")
-        original = niiloader.loadFullFile(self.importfile_direct[0])
-        # Create a new .nii file with the modified data
-        data[0,0,0] = float(360.0)
-        print("This is the thing ehre")
-        print(line_plot.lineList)
-        for i in range(len(line_plot.lineList)):
-            print(line_plot.lineList[i])
-        #     TODO - add the line data to the data variable 
 
-        new_img = nib.Nifti1Image(data, original.affine, original.header)
-        nib.save(new_img, filename)
+        print(self.savefile_direct)
+        nii = nib.load(self.importfile_direct[0])
+        data = nii.get_fdata()
+        header = nii.header
+
+        SaveLines = line_plot.returnSaveLines()
+        print(SaveLines)
+        if len(SaveLines) == 0:
+            print("No lines to save")
+        elif len(SaveLines) == 1:
+            print("One line to save")
+        elif len(SaveLines) == 2:
+            print("Two lines to save")
+            x = str(SaveLines[0][0])
+            y = str(SaveLines[0][1])
+            slice = str(self.slider().value())
+            slice_update = str(slice).zfill(4)
+            print("slice = " + slice_update)
+            x2 = str(SaveLines[1][0])
+            y2 = str(SaveLines[1][1])
+        else:
+            print("Two lines to save")
+            x = str(SaveLines[-2][0])
+            y = str(SaveLines[-2][1])
+            slice = str(self.slider().value())
+            slice_update = str(slice).zfill(4)
+            print("slice = " + slice_update)
+            x2 = str(SaveLines[-1][0])
+            y2 = str(SaveLines[-1][1])
+        if(SaveLines != []):
+            print(x[0:4]+y[0:4]+slice_update[0:4]+x2[0:4]+y2[0:4])
+            header['aux_file'] = x[0:4]+y[0:4]+slice_update[0:4]+x2[0:4]+y2[0:4]
+            # header['aux_file'] = np.concatenate((header.get_data_shape(), [2], new_data_line))
+            new_nii = nib.Nifti1Image(data, None, header=header)
+            nib.save(new_nii, filename)
+             # new_dim = np.concatenate((header.get_data_shape(), [2], new_data_line))
+
+
+    def importLines(self):
+        nii = nib.load(self.importfile_direct[0])
+        data = nii.get_fdata()
+        header = nii.header
+        print(header['aux_file'])
+        if(header['aux_file'] != b''):
+            stringHead = str(header['aux_file'])
+            print(stringHead)
+            x = float(stringHead[2:6])
+            print("x: ", x)
+            y = float(stringHead[6:10])
+            print("y: ", y)
+            slice = float(stringHead[10:14])
+            print("slice: ", slice)
+            x2 = float(stringHead[14:18])
+            print("x2: ", x2)
+            y2 = float(stringHead[18:22])
+            print("y2: ", y2)
+            # move to the slice created on
+            self.slider().setValue(int(slice))
+            line_plot.importLines(x, y, slice, x2, y2)
+        else:
+            print("No lines to import")
 
     def importButtonClick(self):
         settings = SettingsWindow()
@@ -285,6 +336,7 @@ class MainWindow(QMainWindow):
         if self.importfile_direct[0] == "":
             pass
         else:
+            niiloader.loadFullFile(self.importfile_direct[0])
             self.image_data = loadFile(self.importfile_direct[0])
             # Display Image
             self.DisplayImageSlice(default_slice)
@@ -297,6 +349,7 @@ class MainWindow(QMainWindow):
             # hack - this is a hack to get the comment and stat panel to show up correctly
             self.resize(1285, 725)
             self.slider_widget.setValue(default_slice)
+            self.importLines()
 
     def DisplayImageSlice(self, i):
         self.imageDisp.displayImage(self.image_data[:, :, i])
