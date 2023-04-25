@@ -13,6 +13,7 @@ def linePlot(x, y, fig):
     fig.canvas.draw()
 
 
+
 # used to find the gradient of the perpedicular line
 def getStats(x, y):
     # finds the gradient on the original line
@@ -85,8 +86,8 @@ lineList = []
 mouseClicks = []  # stores all line point positions
 currentlySelected = []
 
-
 def returnSaveLines():
+
     result = []
     for i in range(len(lineList)):
         print(lineList[i][0].get_data())
@@ -94,6 +95,7 @@ def returnSaveLines():
         y = lineList[i][0].get_ydata()
         result.append(x)
         result.append(y)
+
     return result
 
 

@@ -12,6 +12,7 @@ from PyQt6.QtWidgets import (
 )
 
 import niiloader
+from line_plot import lineList, returnSaveLines
 from niiloader import *
 from ImageDisplay import *
 from settingsWindow import *
@@ -35,7 +36,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         # Calling the constructor of the parent class.
         super().__init__()
-
+        self.Stat_Panel()
         self.edit_menu = None
         self.file_menu = None
         self.settings_window_been_open = False
@@ -374,6 +375,9 @@ class MainWindow(QMainWindow):
             self.left_toolbar.setEnabled(True)
             self.edit_menu.setEnabled(True)
             self.comment_box()
+            result = returnSaveLines()
+
+            # call the Stat_Panel method to update the status panel with the x and y coordinates
             self.Stat_Panel()
             # hack - this is a hack to get the comment and stat panel to show up correctly
             self.resize(1285, 725)
@@ -505,13 +509,17 @@ class MainWindow(QMainWindow):
         self.undo_icon.setStatusTip("Undo")
 
     def Stat_Panel(self):
-        # Bijoy Bakar - `Stat Panel
         layout = QVBoxLayout()
         self.Panel = QTextEdit(self)
-        # this is how you would add the values text_box.setText(f"The value is {value}")
-        self.Panel.setText("Diameter: \n\nX-Coordinates:  \n\nY-Coordinates: ")
+        lines = returnSaveLines()
+        x_coords = [str(x) for x in lines[::2]]
+        y_coords = [str(y) for y in lines[1::2]]
+        text = f"Diameter: \n\nX-Coordinates: {', '.join(x_coords)}\n\nY-Coordinates: {', '.join(y_coords)}"
+        self.Panel.setText(text)
+        #self.Panel.setText("Diameter: \n\nX-Coordinates:  \n\nY-Coordinates: ")
         self.Panel.setReadOnly(True)
         layout.addWidget(self.Panel)
+
 
     # settings window
     # Setting to None to prevent more than one settings window from opening at a time - prevents settings JSON being
