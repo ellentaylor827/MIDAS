@@ -14,6 +14,7 @@ import niiloader
 from niiloader import *
 from ImageDisplay import *
 from settingsWindow import *
+from line_plot import *
 from matplotlib.backends.qt_compat import QtWidgets
 from matplotlib.backends.backend_qtagg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.backend_bases import NavigationToolbar2 as backendNavToolbar
@@ -100,14 +101,17 @@ class MainWindow(QMainWindow):
     # TODO - Temp while we assign the functions - REMOVE WHEN THE REAL FUNCTIONS HAVE BEEN ASSIGNED ABOVE
     # possible to just map the function in the below functions if multiple lines are needed to call the assigned functions :)
 
+
     def cursorClick(self):
         print("Cursor Clicked")
 
     def trashClick(self):
         print("Trash Clicked")
+        self.imageDisp.deleteOne()
 
     def trashAllClick(self):
         print("Trash All Clicked")
+        self.imageDisp.deleteAll()
 
     def initUI(self):
         # Add your widgets and layouts here

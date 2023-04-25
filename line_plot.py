@@ -8,8 +8,10 @@ def linePlot(x, y, fig):
     lineTemp = plt.plot(x, y, marker='.', color="Yellow")
     #adds the drawn line to an array
     lineList.append(lineTemp)
+    print(lineList)
     print(lineTemp[0].get_data())
     fig.canvas.draw()
+
 
 # used to find the gradient of the perpedicular line
 def getStats(x, y):
@@ -70,11 +72,25 @@ def selectLine(e):
 
 
 # deletes a selected line
-def delete_line(e):
-    #removes the selected line and updates the plot
-    line = lineList[0].pop(0)
-    line.remove()
-    plt.show()
+def deleteOne(fig):
+    while len(currentlySelected) != 0:
+        for i in range(0, len(lineList)):
+            if lineList[i][0] == currentlySelected[0]:
+                print("true")
+                line = lineList[i].pop(0)
+                line.remove()
+                lineList.remove([])
+                currentlySelected.clear()
+                fig.canvas.draw()
+                break
+
+def deleteAll(fig):
+    for i in range(0, len(lineList)):
+        line = lineList[i].pop(0)
+        line.remove()
+        fig.canvas.draw()
+    lineList.clear()
+
 
 lineList = []
 mouseClicks = [] # stores all line point positions

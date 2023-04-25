@@ -37,6 +37,7 @@ class ImageDisplay(FigureCanvasQTAgg):
         # connect button press event to the figure canvas
         # this button_press_event can be changed to call any self.function we want to be called
         self._fig.canvas.mpl_connect('button_press_event', self.mouseEvent)
+        self._fig.canvas.mpl_connect('key_press_event', self.keyPressEvent)  # creates the click event
 
         # Create the Axes and then Hide them
         self._axes = self._fig.add_subplot(111)
@@ -94,5 +95,13 @@ class ImageDisplay(FigureCanvasQTAgg):
         if self._toolbarSelection["edit"]:
             line_plot.click_event(event, self._fig)
             print('x: {} and y: {}'.format(event.xdata, event.ydata))
-        if self._toolbarSelection["pan/zoom"]:
+        if self._toolbarSelection["cursor"]:
             line_plot.selectLine(event)
+
+    def deleteAll(self):
+        line_plot.deleteAll(self._fig)
+    def deleteOne(self):
+        line_plot.deleteOne(self._fig)
+    def keyPressEvent(self, event):
+        if self._toolbarSelection["trash"]:
+            line_plot.deleteOne(event, self._fig)

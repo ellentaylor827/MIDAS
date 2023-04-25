@@ -16,6 +16,5 @@ if __name__ == '__main__':
     app.exec()
 
 
-# note on pyinstaller :
-#  command used for windows is: python -m PyInstaller MIDAS.spec main.py
+# note on pyinstaller :  command used for windows is: python -m PyInstaller MIDAS.spec main.py
 #  after installing pyqt6 and pyinstaller
