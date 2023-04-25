@@ -36,7 +36,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         # Calling the constructor of the parent class.
         super().__init__()
-        self.Stat_Panel()
+        # self.Stat_Panel()
         self.edit_menu = None
         self.file_menu = None
         self.settings_window_been_open = False
@@ -449,10 +449,22 @@ class MainWindow(QMainWindow):
         niiloader.saveText(self.importfile_direct[0], self.textbox.toPlainText())
         print(self.textbox.toPlainText())
 
+    def update_stat_panel(self):
+        lines = returnSaveLines()
+        x_coords = [str(x) for x in lines[::2]]
+        y_coords = [str(y) for y in lines[1::2]]
+        x_coords = [x[1:6] for x in x_coords]
+        y_coords = [y[1:6] for y in y_coords]
+        text = f"X-Coordinates: {', '.join(x_coords)}\n\nY-Coordinates: {', '.join(y_coords)}"
+        self.Panel.setText(text)
+        # self.Panel.setText("Diameter: \n\nX-Coordinates:  \n\nY-Coordinates: ")
+        self.Panel.setReadOnly(True)
+
     def textBoxHideButton(self):
         if self.textbox.isHidden():
             self.textbox.show()
             self.Panel.show()
+            self.update_stat_panel()
         else:
             self.textbox.hide()
             self.Panel.hide()
@@ -513,9 +525,11 @@ class MainWindow(QMainWindow):
         layout = QVBoxLayout()
         self.Panel = QTextEdit(self)
         lines = returnSaveLines()
+        print("save lines is - main_window.py - line 516", lines)
         x_coords = [str(x) for x in lines[::2]]
         y_coords = [str(y) for y in lines[1::2]]
         text = f"Diameter: \n\nX-Coordinates: {', '.join(x_coords)}\n\nY-Coordinates: {', '.join(y_coords)}"
+        print("text is - main_window.py - line 520", text)
         self.Panel.setText(text)
         #self.Panel.setText("Diameter: \n\nX-Coordinates:  \n\nY-Coordinates: ")
         self.Panel.setReadOnly(True)
