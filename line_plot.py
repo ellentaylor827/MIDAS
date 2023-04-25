@@ -11,16 +11,14 @@ def linePlot(x, y, fig):
     print(lineTemp[0].get_data())
     fig.canvas.draw()
 
+    getStats(lineTemp[0].get_xdata(), lineTemp[0].get_ydata())
+
 # used to find the gradient of the perpedicular line
 def getStats(x, y):
-    # finds the gradient on the original line
     xDiff = x[1] - x[0]
     yDiff = y[1] - y[0]
-    gradient = yDiff / xDiff
-    # finds perpedicular bisector gradient
-    bisectorGradient = -xDiff / yDiff
     length = math.sqrt((xDiff*xDiff) + (yDiff * yDiff))
-    return (x, y, length)
+    return (x, y, length) #returns information to be displayed in window
 
 # checks for mouse click
 def click_event(e, fig):
@@ -67,6 +65,8 @@ def selectLine(e):
         currentlySelected[0].set_color("yellow")
         currentlySelected.pop(0)
         currentlySelected[0].set_color("red")
+
+    getStats(currentlySelected[0].get_xdata(), currentlySelected[0].get_ydata())
 
 
 # deletes a selected line
