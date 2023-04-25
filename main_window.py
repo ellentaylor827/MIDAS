@@ -236,16 +236,16 @@ class MainWindow(QMainWindow):
 
     def saveButtonClick(self):
         savefile_direct = self.getSaveFileName()
-        print("save button pressed!")
+        # print("save button pressed!")
         # returns: ('/Users/alexanderelwell/Documents/GtiHub/MIDAS/Data File.nii',
         # 'NIFTI Images (*.nii *.nii.gz *.hdr)')
-        print(savefile_direct)
+        # print(savefile_direct)
         # Check that a file has been selected and stored in tuple index 0
         # if it is empty, cancel or nothing has been selected, pass to avoid crash
         if savefile_direct[0] == "":
             pass
         else:
-            print(self.image_data)
+            # print(self.image_data)
             self.saveFile(savefile_direct[0], self.image_data)
 
     # Save the file to the specified location
@@ -257,73 +257,102 @@ class MainWindow(QMainWindow):
             print("File does not exist")
 
         # add a check to see if the file is a nifti file and if it is not, add the appropriate extension
-        if(filename.endswith('.nii') or filename.endswith('.nii.gz') or filename.endswith('.hdr')):
+        if (filename.endswith('.nii') or filename.endswith('.nii.gz') or filename.endswith('.hdr')):
             print("File is a nifti file")
         else:
             filename.join('.nii')
             print("File is not a nifti file")
 
-        print(self.savefile_direct)
+        # print(self.savefile_direct)
         nii = nib.load(self.importfile_direct[0])
         data = nii.get_fdata()
         header = nii.header
 
         SaveLines = line_plot.returnSaveLines()
-        print(SaveLines)
-        if len(SaveLines) == 0:
-            print("No lines to save")
-        elif len(SaveLines) == 1:
+        # print(SaveLines)
+        if len(SaveLines) == 2:
             print("One line to save")
-        elif len(SaveLines) == 2:
-            print("Two lines to save")
-            x = str(SaveLines[0][0])
-            y = str(SaveLines[0][1])
+            x = str(SaveLines[0][0]*100)
+            print("x: " + x)
+            y = str(SaveLines[0][1]*100)
+            print("y: " + y)
             slice = str(self.slider().value())
             slice_update = str(slice).zfill(4)
             print("slice = " + slice_update)
-            x2 = str(SaveLines[1][0])
-            y2 = str(SaveLines[1][1])
+            x2 = str(SaveLines[1][0]*100)
+            print("x2: " + x2)
+            y2 = str(SaveLines[1][1]*100)
+            print("y2: " + y2)
         else:
             print("Two lines to save")
-            x = str(SaveLines[-2][0])
-            y = str(SaveLines[-2][1])
+            x = str(SaveLines[-2][0]*100)
+            print("x: " + x)
+            y = str(SaveLines[-2][1]*100)
+            print("y: " + y)
             slice = str(self.slider().value())
             slice_update = str(slice).zfill(4)
             print("slice = " + slice_update)
-            x2 = str(SaveLines[-1][0])
-            y2 = str(SaveLines[-1][1])
-        if(SaveLines != []):
-            print(x[0:4]+y[0:4]+slice_update[0:4]+x2[0:4]+y2[0:4])
-            header['aux_file'] = x[0:4]+y[0:4]+slice_update[0:4]+x2[0:4]+y2[0:4]
+            x2 = str(SaveLines[-1][0]*100)
+            print("x2: " + x2)
+            y2 = str(SaveLines[-1][1]*100)
+            print("y2: " + y2)
+            x3 = str(SaveLines[-4][0]*100)
+            print("x3: " + x3)
+            y3 = str(SaveLines[-4][1]*100)
+            print("y3: " + y3)
+            x4 = str(SaveLines[-3][0]*100)
+            print("x4: " + x4)
+            y4 = str(SaveLines[-3][1]*100)
+            print("y4: " + y4)
+
+        if (SaveLines != []):
+            # print("data type = " + x[0:5] + y[0:5] + "db_name " + x2[0:5] + y2[0:5] + "extents " + slice_update)
+            # line 1 data
+            header['data_type'] = x[0:5] + y[0:5]
+            header['extents'] = slice_update
+            header['db_name'] = x2[0:5] + y2[0:5]
+            # line 2
+            header['aux_file'] = x3[0:5] + y3[0:5] + x4[0:5] + y4[0:5]
             # header['aux_file'] = np.concatenate((header.get_data_shape(), [2], new_data_line))
             new_nii = nib.Nifti1Image(data, None, header=header)
             nib.save(new_nii, filename)
-             # new_dim = np.concatenate((header.get_data_shape(), [2], new_data_line))
-
+            # new_dim = np.concatenate((header.get_data_shape(), [2], new_data_line))
 
     def importLines(self):
         nii = nib.load(self.importfile_direct[0])
         data = nii.get_fdata()
         header = nii.header
-        print(header['aux_file'])
-        if(header['aux_file'] != b''):
-            stringHead = str(header['aux_file'])
-            print(stringHead)
-            x = float(stringHead[2:6])
-            print("x: ", x)
-            y = float(stringHead[6:10])
-            print("y: ", y)
-            slice = float(stringHead[10:14])
-            print("slice: ", slice)
-            x2 = float(stringHead[14:18])
-            print("x2: ", x2)
-            y2 = float(stringHead[18:22])
-            print("y2: ", y2)
-            # move to the slice created on
-            self.slider().setValue(int(slice))
-            line_plot.importLines(x, y, slice, x2, y2)
-        else:
-            print("No lines to import")
+        if header['data_type'] != b'':
+            if header['extents'] != b'':
+                if header['db_name'] != b'':
+                    stringHead = str(header['data_type'])
+                    print(stringHead)
+                    x = float(stringHead[2:7]) / 100
+                    print("x: ", x)
+                    y = float(stringHead[7:12]) / 100
+                    print("y: ", y)
+                    slice = int(header['extents'])
+                    print("slice: ", slice)
+                    stringDbName = str(header['db_name'])
+                    x2 = float(stringDbName[2:7]) / 100
+                    print("x2: ", x2)
+                    y2 = float(stringDbName[7:12]) / 100
+                    print("y2: ", y2)
+                    # move to the slice created on
+                    self.slider().setValue(int(slice))
+                    line_plot.importLines(x, y, slice, x2, y2)
+                    stringAuxFile = str(header['aux_file'])
+                    x3 = float(stringAuxFile[2:7]) / 100
+                    print("x3: ", x3)
+                    y3 = float(stringAuxFile[7:12]) / 100
+                    print("y3: ", y3)
+                    x4 = float(stringAuxFile[12:17]) / 100
+                    print("x4: ", x4)
+                    y4 = float(stringAuxFile[17:22]) / 100
+                    print("y4: ", y4)
+                    line_plot.importLines(x3, y3, slice, x4, y4)
+                else:
+                    print("No lines to import")
 
     def importButtonClick(self):
         settings = SettingsWindow()

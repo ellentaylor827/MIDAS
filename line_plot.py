@@ -22,7 +22,7 @@ def getStats(x, y):
     # finds perpedicular bisector gradient
     bisectorGradient = -xDiff / yDiff
     length = math.sqrt((xDiff * xDiff) + (yDiff * yDiff))
-    return (x, y, length)
+    return x, y, length
 
 
 # checks for mouse click
@@ -98,11 +98,15 @@ def returnSaveLines():
 
 
 def importLines(x, y, slice, x2, y2):
+    print("x " + str(x) + "y " + str(y) + "slice " + str(slice) + "x2 " + str(x2) + "y2 " + str(y2))
     # plots and draws the line
+    x = x, y
+    y = x2, y2
+
     lineTemp = plt.plot(x, y, marker='.', color="Yellow")
-    lineTemp2 = plt.plot(x2, y2, marker='.', color="Yellow")
+    # lineTemp2 = plt.plot(x2, y2, marker='.', color="Yellow")
     # adds the drawn line to an array
     lineList.append(lineTemp)
-    lineList.append(lineTemp2)
+    # lineList.append(lineTemp2)
     print(lineTemp[0].get_data())
-    print(lineTemp2[0].get_data())
+    # print(lineTemp2[0].get_data())
