@@ -356,6 +356,7 @@ class MainWindow(QMainWindow):
 
     def importButtonClick(self):
         settings = SettingsWindow()
+        settings.hide()
         default_slice = settings.default_slice_number
         self.importfile_direct = self.getFileName()
         print("import button pressed!", self.importfile_direct)
