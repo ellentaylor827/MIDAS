@@ -3,14 +3,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math
 
+
 def linePlot(x, y, fig):
     # plots and draws the line
     lineTemp = plt.plot(x, y, marker='.', color="Yellow")
-    #adds the drawn line to an array
+    # adds the drawn line to an array
     lineList.append(lineTemp)
     print(lineList)
     print(lineTemp[0].get_data())
     fig.canvas.draw()
+
 
 
 # used to find the gradient of the perpedicular line
@@ -21,8 +23,9 @@ def getStats(x, y):
     gradient = yDiff / xDiff
     # finds perpedicular bisector gradient
     bisectorGradient = -xDiff / yDiff
-    length = math.sqrt((xDiff*xDiff) + (yDiff * yDiff))
-    return (x, y, length)
+    length = math.sqrt((xDiff * xDiff) + (yDiff * yDiff))
+    return x, y, length
+
 
 # checks for mouse click
 def click_event(e, fig):
@@ -36,11 +39,12 @@ def click_event(e, fig):
         y = firstPoint[1], secondPoint[1]
         linePlot(x, y, fig)
 
+
 # calculates the closest line to the mouse position
 def selectLine(e):
     pointCoords = e.xdata, e.ydata
     shortestDist = []
-    #calculates the coordinate closest to the mouse position
+    # calculates the coordinate closest to the mouse position
     for x in range(len(mouseClicks)):
         xdist = abs(pointCoords[0] - mouseClicks[x][0])
         ydist = abs(pointCoords[1] - mouseClicks[x][1])
@@ -93,5 +97,32 @@ def deleteAll(fig):
 
 
 lineList = []
-mouseClicks = [] # stores all line point positions
+mouseClicks = []  # stores all line point positions
 currentlySelected = []
+
+def returnSaveLines():
+
+    result = []
+    for i in range(len(lineList)):
+        print(lineList[i][0].get_data())
+        x = lineList[i][0].get_xdata()
+        y = lineList[i][0].get_ydata()
+        result.append(x)
+        result.append(y)
+
+    return result
+
+
+def importLines(x, y, slice, x2, y2):
+    print("x " + str(x) + "y " + str(y) + "slice " + str(slice) + "x2 " + str(x2) + "y2 " + str(y2))
+    # plots and draws the line
+    x = x, y
+    y = x2, y2
+
+    lineTemp = plt.plot(x, y, marker='.', color="Yellow")
+    # lineTemp2 = plt.plot(x2, y2, marker='.', color="Yellow")
+    # adds the drawn line to an array
+    lineList.append(lineTemp)
+    # lineList.append(lineTemp2)
+    print(lineTemp[0].get_data())
+    # print(lineTemp2[0].get_data())

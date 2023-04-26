@@ -1,5 +1,6 @@
 import os
 import PyQt6
+import os.path
 from PyQt6.QtCore import QSize, Qt, QRect
 from PyQt6.QtGui import QAction, QIcon, QTextCursor
 from PyQt6.QtWidgets import (
@@ -11,6 +12,7 @@ from PyQt6.QtWidgets import (
 )
 
 import niiloader
+from line_plot import lineList, returnSaveLines
 from niiloader import *
 from ImageDisplay import *
 from settingsWindow import *
@@ -18,6 +20,8 @@ from line_plot import *
 from matplotlib.backends.qt_compat import QtWidgets
 from matplotlib.backends.backend_qtagg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.backend_bases import NavigationToolbar2 as backendNavToolbar
+import nibabel as nib
+import numpy as np
 
 # Setting a base directory for when generating a pyinstaller file
 basedir = os.path.dirname(__file__)
@@ -33,7 +37,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         # Calling the constructor of the parent class.
         super().__init__()
-
+        # self.Stat_Panel()
         self.edit_menu = None
         self.file_menu = None
         self.settings_window_been_open = False
@@ -237,13 +241,127 @@ class MainWindow(QMainWindow):
 
     def saveButtonClick(self):
         savefile_direct = self.getSaveFileName()
-        print("save button pressed!")
+        # print("save button pressed!")
         # returns: ('/Users/alexanderelwell/Documents/GtiHub/MIDAS/Data File.nii',
         # 'NIFTI Images (*.nii *.nii.gz *.hdr)')
-        print(savefile_direct)
+        # print(savefile_direct)
+        # Check that a file has been selected and stored in tuple index 0
+        # if it is empty, cancel or nothing has been selected, pass to avoid crash
+        if savefile_direct[0] == "":
+            pass
+        else:
+            # print(self.image_data)
+            self.saveFile(savefile_direct[0], self.image_data)
+
+    # Save the file to the specified location
+    def saveFile(self, filename, data):
+        # add a check to see if the file already exists and if it does, ask the user if they want to overwrite it
+        if (os.path.exists(filename)):
+            print("File already exists")
+        else:
+            print("File does not exist")
+
+        # add a check to see if the file is a nifti file and if it is not, add the appropriate extension
+        if (filename.endswith('.nii') or filename.endswith('.nii.gz') or filename.endswith('.hdr')):
+            print("File is a nifti file")
+        else:
+            filename.join('.nii')
+            print("File is not a nifti file")
+
+        # print(self.savefile_direct)
+        nii = nib.load(self.importfile_direct[0])
+        data = nii.get_fdata()
+        header = nii.header
+
+        SaveLines = line_plot.returnSaveLines()
+        # print(SaveLines)
+        if len(SaveLines) == 2:
+            print("One line to save")
+            x = str(SaveLines[0][0]*100)
+            print("x: " + x)
+            y = str(SaveLines[0][1]*100)
+            print("y: " + y)
+            slice = str(self.slider().value())
+            slice_update = str(slice).zfill(4)
+            print("slice = " + slice_update)
+            x2 = str(SaveLines[1][0]*100)
+            print("x2: " + x2)
+            y2 = str(SaveLines[1][1]*100)
+            print("y2: " + y2)
+        else:
+            print("Two lines to save")
+            x = str(SaveLines[-2][0]*100)
+            print("x: " + x)
+            y = str(SaveLines[-2][1]*100)
+            print("y: " + y)
+            slice = str(self.slider().value())
+            slice_update = str(slice).zfill(4)
+            print("slice = " + slice_update)
+            x2 = str(SaveLines[-1][0]*100)
+            print("x2: " + x2)
+            y2 = str(SaveLines[-1][1]*100)
+            print("y2: " + y2)
+            x3 = str(SaveLines[-4][0]*100)
+            print("x3: " + x3)
+            y3 = str(SaveLines[-4][1]*100)
+            print("y3: " + y3)
+            x4 = str(SaveLines[-3][0]*100)
+            print("x4: " + x4)
+            y4 = str(SaveLines[-3][1]*100)
+            print("y4: " + y4)
+
+        if (SaveLines != []):
+            # print("data type = " + x[0:5] + y[0:5] + "db_name " + x2[0:5] + y2[0:5] + "extents " + slice_update)
+            # line 1 data
+            header['data_type'] = x[0:5] + y[0:5]
+            header['extents'] = slice_update
+            header['db_name'] = x2[0:5] + y2[0:5]
+            # line 2
+            header['aux_file'] = x3[0:5] + y3[0:5] + x4[0:5] + y4[0:5]
+            # header['aux_file'] = np.concatenate((header.get_data_shape(), [2], new_data_line))
+            new_nii = nib.Nifti1Image(data, None, header=header)
+            nib.save(new_nii, filename)
+            # new_dim = np.concatenate((header.get_data_shape(), [2], new_data_line))
+
+    def importLines(self):
+        nii = nib.load(self.importfile_direct[0])
+        data = nii.get_fdata()
+        header = nii.header
+        if header['data_type'] != b'':
+            if header['extents'] != b'':
+                if header['db_name'] != b'':
+                    stringHead = str(header['data_type'])
+                    print(stringHead)
+                    x = float(stringHead[2:7]) / 100
+                    print("x: ", x)
+                    y = float(stringHead[7:12]) / 100
+                    print("y: ", y)
+                    slice = int(header['extents'])
+                    print("slice: ", slice)
+                    stringDbName = str(header['db_name'])
+                    x2 = float(stringDbName[2:7]) / 100
+                    print("x2: ", x2)
+                    y2 = float(stringDbName[7:12]) / 100
+                    print("y2: ", y2)
+                    # move to the slice created on
+                    self.slider().setValue(int(slice))
+                    line_plot.importLines(x, y, slice, x2, y2)
+                    stringAuxFile = str(header['aux_file'])
+                    x3 = float(stringAuxFile[2:7]) / 100
+                    print("x3: ", x3)
+                    y3 = float(stringAuxFile[7:12]) / 100
+                    print("y3: ", y3)
+                    x4 = float(stringAuxFile[12:17]) / 100
+                    print("x4: ", x4)
+                    y4 = float(stringAuxFile[17:22]) / 100
+                    print("y4: ", y4)
+                    line_plot.importLines(x3, y3, slice, x4, y4)
+                else:
+                    print("No lines to import")
 
     def importButtonClick(self):
         settings = SettingsWindow()
+        settings.hide()
         default_slice = settings.default_slice_number
         self.importfile_direct = self.getFileName()
         print("import button pressed!", self.importfile_direct)
@@ -253,6 +371,7 @@ class MainWindow(QMainWindow):
         if self.importfile_direct[0] == "":
             pass
         else:
+            niiloader.loadFullFile(self.importfile_direct[0])
             self.image_data = loadFile(self.importfile_direct[0])
             # Display Image
             self.DisplayImageSlice(default_slice)
@@ -261,10 +380,14 @@ class MainWindow(QMainWindow):
             self.left_toolbar.setEnabled(True)
             self.edit_menu.setEnabled(True)
             self.comment_box()
+            result = returnSaveLines()
+
+            # call the Stat_Panel method to update the status panel with the x and y coordinates
             self.Stat_Panel()
             # hack - this is a hack to get the comment and stat panel to show up correctly
             self.resize(1285, 725)
             self.slider_widget.setValue(default_slice)
+            self.importLines()
 
     def DisplayImageSlice(self, i):
         self.imageDisp.displayImage(self.image_data[:, :, i])
@@ -330,10 +453,22 @@ class MainWindow(QMainWindow):
         niiloader.saveText(self.importfile_direct[0], self.textbox.toPlainText())
         print(self.textbox.toPlainText())
 
+    def update_stat_panel(self):
+        lines = returnSaveLines()
+        x_coords = [str(x) for x in lines[::2]]
+        y_coords = [str(y) for y in lines[1::2]]
+        x_coords = [x[1:6] for x in x_coords]
+        y_coords = [y[1:6] for y in y_coords]
+        text = f"X-Coordinates: {', '.join(x_coords)}\n\nY-Coordinates: {', '.join(y_coords)}"
+        self.Panel.setText(text)
+        # self.Panel.setText("Diameter: \n\nX-Coordinates:  \n\nY-Coordinates: ")
+        self.Panel.setReadOnly(True)
+
     def textBoxHideButton(self):
         if self.textbox.isHidden():
             self.textbox.show()
             self.Panel.show()
+            self.update_stat_panel()
         else:
             self.textbox.hide()
             self.Panel.hide()
@@ -391,13 +526,19 @@ class MainWindow(QMainWindow):
         self.undo_icon.setStatusTip("Undo")
 
     def Stat_Panel(self):
-        # Bijoy Bakar - `Stat Panel
         layout = QVBoxLayout()
         self.Panel = QTextEdit(self)
-        # this is how you would add the values text_box.setText(f"The value is {value}")
-        self.Panel.setText("Diameter: \n\nX-Coordinates:  \n\nY-Coordinates: ")
+        lines = returnSaveLines()
+        print("save lines is - main_window.py - line 516", lines)
+        x_coords = [str(x) for x in lines[::2]]
+        y_coords = [str(y) for y in lines[1::2]]
+        text = f"Diameter: \n\nX-Coordinates: {', '.join(x_coords)}\n\nY-Coordinates: {', '.join(y_coords)}"
+        print("text is - main_window.py - line 520", text)
+        self.Panel.setText(text)
+        #self.Panel.setText("Diameter: \n\nX-Coordinates:  \n\nY-Coordinates: ")
         self.Panel.setReadOnly(True)
         layout.addWidget(self.Panel)
+
 
     # settings window
     # Setting to None to prevent more than one settings window from opening at a time - prevents settings JSON being
