@@ -26,7 +26,8 @@ class ImageDisplay(FigureCanvasQTAgg):
         self._toolbar = None
         self._toolbarSelection = {
             "pan/zoom": False,
-            "edit": False
+            "edit": False,
+            "Cursor": False
         }
 
         # Create the Figure
@@ -76,9 +77,10 @@ class ImageDisplay(FigureCanvasQTAgg):
             self._toolbarSelection["pan/zoom"] = True
         else:
             self._toolbarSelection["pan/zoom"] = False
+            self._toolbarSelection["Cursor"] = False
+
 
     def edit(self):
-
         # If "pan/zoom" is true, call panZoom which will call pan function and set "pan/zoom" to false.
         if self._toolbarSelection["pan/zoom"]:
             self.panZoom()
@@ -88,6 +90,18 @@ class ImageDisplay(FigureCanvasQTAgg):
             self._toolbarSelection["edit"] = True
         else:
             self._toolbarSelection["edit"] = False
+            self._toolbarSelection["Cursor"] = False
+
+
+    def cursor(self):
+        if self._toolbarSelection["pan/zoom"]:
+            self.panZoom()
+
+        if not self._toolbarSelection["Cursor"]:
+            self._toolbarSelection["Cursor"] = True
+        else:
+            self._toolbarSelection["Cursor"] = False
+            self._toolbarSelection["edit"] = False
 
     # This function is just displaying a print statement to display the x and y being called on the button_press_event
     def mouseEvent(self, event):
@@ -95,8 +109,9 @@ class ImageDisplay(FigureCanvasQTAgg):
         if self._toolbarSelection["edit"]:
             line_plot.click_event(event, self._fig)
             print('x: {} and y: {}'.format(event.xdata, event.ydata))
-        if self._toolbarSelection["cursor"]:
+        if self._toolbarSelection["Cursor"]:
             line_plot.selectLine(event)
+
 
     def deleteAll(self):
         line_plot.deleteAll(self._fig)

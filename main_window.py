@@ -108,6 +108,7 @@ class MainWindow(QMainWindow):
 
     def cursorClick(self):
         print("Cursor Clicked")
+        self.imageDisp.cursor()
 
     def trashClick(self):
         print("Trash Clicked")
