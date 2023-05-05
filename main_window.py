@@ -167,7 +167,7 @@ class MainWindow(QMainWindow):
         # Creating the comment button
         self.left_toolbar.addAction(self.comment_icon)
 
-        self.left_toolbar.addAction(self.cursor_icon)
+        # self.left_toolbar.addAction(self.cursor_icon)
         self.left_toolbar.addAction(self.trash_icon)
 
         # Ensuring that only 1 button (edit or pan) is selected at one time
