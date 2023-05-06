@@ -94,6 +94,33 @@ def testPressEditWhilePanZoom(mainWindow, qtbot):
     assert imageDisp._toolbarSelection["edit"] == False, "edit functionality was not disabled when selecting a second time"
     assert imageDisp._toolbarSelection["Cursor"] == False, "cursor functionality on when selecting edit to turn off"
 
+def testPressHandWhileEdit(mainWindow, qtbot):
+    mainWindow.closeEvent = None
+
+    handAction = mainWindow.left_toolbar.actions()[0]
+    editAction = mainWindow.left_toolbar.actions()[1]
+    imageDisp = mainWindow.imageDisp
+
+    # turn on edit functionality
+    editAction.trigger()
+    assert imageDisp._toolbarSelection["pan/zoom"] == False, "Edit Button was selected but this enabled pan/zoom aswell"
+    assert imageDisp._toolbarSelection["edit"] == True, "Edit has not been enabled when selected"
+    assert imageDisp._toolbarSelection["Cursor"] == False, "Edit button enabled cursor functionality"
+
+    # turn on pan/zoom, this should disable edit.
+    handAction.trigger()
+    assert imageDisp._toolbarSelection["pan/zoom"] == True, "pan/zoom functionality was not enabled when selected while edit is enabled"
+    assert imageDisp._toolbarSelection["edit"] == False, "edit functionality was not disabled when selecting hand icon for pan/zoom"
+    assert imageDisp._toolbarSelection["Cursor"] == False, "cursor functionality enabled when selecting hand icon while edit enabled"
+
+    # Click hand Action again, pan/zoom should be False, edit should be False.
+    handAction.trigger()
+    assert imageDisp._toolbarSelection["pan/zoom"] == False, "panZoom was selected to be disabled  but it has remained enabled"
+    assert imageDisp._toolbarSelection["edit"] == False, "panZoom was selected to be disabled however edit has now been enabled"
+    assert imageDisp._toolbarSelection["Cursor"] == False, "panZoom was selected to be disabled however edit has been been enabled"
+
+
+
 
 
 
