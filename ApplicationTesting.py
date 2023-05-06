@@ -23,6 +23,10 @@ def testEditDefault(mainWindow, qtbot):
     mainWindow.closeEvent = None
     assert mainWindow.imageDisp._toolbarSelection["edit"] == False
 
+def testCursorDefault(mainWindow, qtbot):
+    mainWindow.closeEvent = None
+    assert mainWindow.imageDisp._toolbarSelection["Cursor"] == False
+
 def testHandButton(mainWindow, qtbot):
     mainWindow.closeEvent = None
     mainWindow.show()
@@ -39,8 +43,16 @@ def testHandButton(mainWindow, qtbot):
     handAction.trigger()
     assert imageDisp._toolbarSelection["pan/zoom"] == True, "panZoom has not been enabled when selected"
     assert imageDisp._toolbarSelection["edit"] == False, "edit is enabled when panZoom has been selected"
+    assert imageDisp._toolbarSelection["Cursor"] == False, "Cursor is enabled when panZoom has been selected"
 
     # Click hand Action again, pan/zoom should be False, edit should be False.
     handAction.trigger()
     assert imageDisp._toolbarSelection["pan/zoom"] == False, "panZoom was selected to be disabled  but it has remained enabled"
     assert imageDisp._toolbarSelection["edit"] == False, "panZoom was selected to be disabled however edit has now been enabled"
+    assert imageDisp._toolbarSelection["Cursor"] == False, "panZoom was selected to be disabled however edit has been been enabled"
+
+def 
+
+
+
+
