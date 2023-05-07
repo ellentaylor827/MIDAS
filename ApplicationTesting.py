@@ -33,6 +33,16 @@ def testCheckNumberOfLeftToolbarActions(mainWindow, qtbot):
     assert len(mainWindow.left_toolbar.actions()) == 4, \
         f"There Should be four actions within left toolbar, hand_icon, edit_icon, comment_icon, trash_icon, their are currently {len(mainWindow.left_toolbar.actions())}"
 
+# Check that all the actions on the left toolbar are by default set to true
+def testCheckLeftToolbarActionsDefaultSetting(mainWindow, qtbot):
+    mainWindow.closeEvent = None
+
+    assert mainWindow.left_toolbar.actions()[0].isEnabled() == True, "hand_icon is set to enabled when application is first opened, Should be False"
+    assert mainWindow.left_toolbar.actions()[1].isEnabled() == True, "edit_icon is set to enabled when application is first opened, Should be False"
+    assert mainWindow.left_toolbar.actions()[2].isEnabled() == True, "comment_icon is set to enabled when application is first opened, should be False"
+
+
+
 # Test that the hand button functionality works as intended when triggered
 def testHandButton(mainWindow, qtbot):
     mainWindow.closeEvent = None
