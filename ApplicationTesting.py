@@ -33,13 +33,20 @@ def testCheckNumberOfLeftToolbarActions(mainWindow, qtbot):
     assert len(mainWindow.left_toolbar.actions()) == 4, \
         f"There Should be four actions within left toolbar, hand_icon, edit_icon, comment_icon, trash_icon, their are currently {len(mainWindow.left_toolbar.actions())}"
 
+
+# test checks that the toolbar is disabled when application is first opened.
+def testCheckLeftToolbarDefaultsDisabled(mainWindow, qtbot):
+    mainWindow.closeEvent = None
+
+    assert mainWindow.left_toolbar.isEnabled() == False, "left_toolbar is enabled when application is first opened, it should be disabled until importing"
+
 # Check that all the actions on the left toolbar are by default set to true
 def testCheckLeftToolbarActionsDefaultSetting(mainWindow, qtbot):
     mainWindow.closeEvent = None
 
-    assert mainWindow.left_toolbar.actions()[0].isEnabled() == True, "hand_icon is set to enabled when application is first opened, Should be False"
-    assert mainWindow.left_toolbar.actions()[1].isEnabled() == True, "edit_icon is set to enabled when application is first opened, Should be False"
-    assert mainWindow.left_toolbar.actions()[2].isEnabled() == True, "comment_icon is set to enabled when application is first opened, should be False"
+    assert mainWindow.left_toolbar.actions()[0].isEnabled() == True, "hand_icon is set to disabled when application is first opened, Should be enabled"
+    assert mainWindow.left_toolbar.actions()[1].isEnabled() == True, "edit_icon is set to disabled when application is first opened, Should be enabled"
+    assert mainWindow.left_toolbar.actions()[2].isEnabled() == True, "comment_icon is set to disabled when application is first opened, should be enabled"
 
 
 
