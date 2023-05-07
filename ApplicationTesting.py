@@ -134,6 +134,12 @@ def testImageImport(mainWindow, qtbot):
 
     assert mainWindow.imageDisp != None, "mainWindow.imageDisp not displaying image"
 
+def testSettingsMenuRegistersOpen(mainWindow, qtbot):
+    mainWindow.closeEvent = None
+
+    settings_action = mainWindow.file_menu.actions()[2]
+    settings_action.trigger()
+    assert mainWindow.settings_window_been_open == True, "Settings window not set to true when it has been opened"
 
 
 
