@@ -27,6 +27,12 @@ def testCursorDefault(mainWindow, qtbot):
     mainWindow.closeEvent = None
     assert mainWindow.imageDisp._toolbarSelection["Cursor"] == False
 
+# Test checks that the left toolbar has a total of four actions.
+def testCheckNumberOfLeftToolbarActions(mainWindow, qtbot):
+    mainWindow.closeEvent = None
+    assert len(mainWindow.left_toolbar.actions()) == 4, \
+        f"There Should be four actions within left toolbar, hand_icon, edit_icon, comment_icon, trash_icon, their are currently {len(mainWindow.left_toolbar.actions())}"
+
 # Test that the hand button functionality works as intended when triggered
 def testHandButton(mainWindow, qtbot):
     mainWindow.closeEvent = None
