@@ -22,10 +22,12 @@ def testEditDefault(mainWindow, qtbot):
     mainWindow.closeEvent = None
     assert mainWindow.imageDisp._toolbarSelection["edit"] == False
 
+# Test that the cursor default value in imageDisp is set to false
 def testCursorDefault(mainWindow, qtbot):
     mainWindow.closeEvent = None
     assert mainWindow.imageDisp._toolbarSelection["Cursor"] == False
 
+# Test that the hand button functionality works as intended when triggered
 def testHandButton(mainWindow, qtbot):
     mainWindow.closeEvent = None
 
@@ -51,6 +53,7 @@ def testHandButton(mainWindow, qtbot):
     assert imageDisp._toolbarSelection["edit"] == False, "panZoom was selected to be disabled however edit has now been enabled"
     assert imageDisp._toolbarSelection["Cursor"] == False, "panZoom was selected to be disabled however edit has been been enabled"
 
+# Test that the edit button functionality works as intended when triggered
 def testEditButton(mainWindow, qtbot):
     mainWindow.closeEvent = None
 
@@ -69,6 +72,7 @@ def testEditButton(mainWindow, qtbot):
     assert imageDisp._toolbarSelection["edit"] == False, "edit functionality was not disabled when selecting a second time"
     assert imageDisp._toolbarSelection["Cursor"] == False, "cursor functionality on when selecting edit to turn off"
 
+# Test that when edit icon is pressed and PanZoon is enabled, Edit is enabled and panZoom is disabled.
 def testPressEditWhilePanZoom(mainWindow, qtbot):
     mainWindow.closeEvent = None
 
@@ -94,6 +98,7 @@ def testPressEditWhilePanZoom(mainWindow, qtbot):
     assert imageDisp._toolbarSelection["edit"] == False, "edit functionality was not disabled when selecting a second time"
     assert imageDisp._toolbarSelection["Cursor"] == False, "cursor functionality on when selecting edit to turn off"
 
+# Test that when hand icon is pressed and edit is enabled, hand icon, or panzoom is enabled and edit functionality is disabled.
 def testPressHandWhileEdit(mainWindow, qtbot):
     mainWindow.closeEvent = None
 
@@ -119,6 +124,7 @@ def testPressHandWhileEdit(mainWindow, qtbot):
     assert imageDisp._toolbarSelection["edit"] == False, "panZoom was selected to be disabled however edit has now been enabled"
     assert imageDisp._toolbarSelection["Cursor"] == False, "panZoom was selected to be disabled however edit has been been enabled"
 
+# Test that when a user selects a file to import, the file is stored in the right location to be opened, and imageDisplay is not set to None.
 def testImageImport(mainWindow, qtbot):
     mainWindow.closeEvent = None
     mainWindow.show()
@@ -134,6 +140,8 @@ def testImageImport(mainWindow, qtbot):
 
     assert mainWindow.imageDisp != None, "mainWindow.imageDisp not displaying image"
 
+# Test to ensure that after a user opens the settings menu, the mainWindow.settings_window_been_open has been set to true to allow other
+# functionality to work.
 def testSettingsMenuRegistersOpen(mainWindow, qtbot):
     mainWindow.closeEvent = None
 
