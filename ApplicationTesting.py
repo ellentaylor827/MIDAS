@@ -119,7 +119,20 @@ def testPressHandWhileEdit(mainWindow, qtbot):
     assert imageDisp._toolbarSelection["edit"] == False, "panZoom was selected to be disabled however edit has now been enabled"
     assert imageDisp._toolbarSelection["Cursor"] == False, "panZoom was selected to be disabled however edit has been been enabled"
 
+def testImageImport(mainWindow, qtbot):
+    mainWindow.closeEvent = None
+    mainWindow.show()
 
+
+    import_action = mainWindow.file_menu.actions()[1]
+
+    qtbot.wait(2000)
+    import_action.trigger()
+
+    ## Check that the directory is being returned to this list
+    assert mainWindow.importfile_direct[0] != "", "File selected however location not stored within importfile_direct"
+
+    assert mainWindow.imageDisp != None, "mainWindow.imageDisp not displaying image"
 
 
 
