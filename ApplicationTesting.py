@@ -154,14 +154,12 @@ def testImageImport(mainWindow, qtbot):
 
 
     import_action = mainWindow.file_menu.actions()[1]
-
-    qtbot.wait(2000)
     import_action.trigger()
 
     ## Check that the directory is being returned to this list
     assert mainWindow.importfile_direct[0] != "", "File selected however location not stored within importfile_direct"
-
     assert mainWindow.imageDisp != None, "mainWindow.imageDisp not displaying image"
+    assert mainWindow.left_toolbar.isEnabled() == True, "left_toolbar is disabled after importing a image, it should be enabled."
 
 # Test to ensure that after a user opens the settings menu, the mainWindow.settings_window_been_open has been set to true to allow other
 # functionality to work.
